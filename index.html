@@ -85,14 +85,14 @@ h2{font-size:16px;font-weight:600;margin:0 0 10px}
     <div style="font-size:17px;font-weight:600;margin-bottom:4px">¡Hola! Vamos a calcular tus objetivos</div>
     <p class="muted" style="font-size:13px;margin:0 0 14px">Pon tu peso actual y el que quieres alcanzar. Lo de «Mis datos» se pide una vez y se recuerda; después solo tocarás el peso.</p>
     <div class="wbox">
-      <label class="f">Peso actual (kg)<input id="swNow" type="number" step="0.1" inputmode="decimal" placeholder="ej. 62"></label>
-      <label class="f">Peso objetivo (kg)<input id="swGoal" type="number" step="0.1" inputmode="decimal" placeholder="ej. 55"></label>
+      <label class="f">Peso actual (kg)<input id="swNow" type="text" inputmode="decimal" step="0.1" placeholder="ej. 62"></label>
+      <label class="f">Peso objetivo (kg)<input id="swGoal" type="text" inputmode="decimal" step="0.1" placeholder="ej. 55"></label>
     </div>
     <details style="margin-top:12px" open>
       <summary>Mis datos (una sola vez)</summary>
       <div class="wbox" style="margin-top:10px">
-        <label class="f">Altura (cm)<input id="sh" type="number" inputmode="numeric" placeholder="ej. 164"></label>
-        <label class="f">Edad<input id="sage" type="number" inputmode="numeric" placeholder="ej. 24"></label>
+        <label class="f">Altura (cm)<input id="sh" type="text" inputmode="decimal" placeholder="ej. 164"></label>
+        <label class="f">Edad<input id="sage" type="text" inputmode="decimal" placeholder="ej. 24"></label>
         <label class="f">Sexo<select id="ssex"><option value="F">Mujer</option><option value="M">Hombre</option></select></label>
         <label class="f">Actividad<select id="sact"><option value="1.2">Poco o nada</option><option value="1.375">Ligero (1-3 d/sem)</option><option value="1.55" selected>Moderado (3-5 d/sem)</option><option value="1.725">Intenso (6-7 d/sem)</option><option value="1.9">Muy intenso</option></select></label>
       </div>
@@ -153,14 +153,14 @@ h2{font-size:16px;font-weight:600;margin:0 0 10px}
             <input id="fName" type="text" placeholder="Nombre (ej. Yogur griego, Café con leche)" style="margin-bottom:8px">
             <div class="row" style="margin-bottom:8px;align-items:center">
               <span class="muted">Ración</span>
-              <input id="fGrams" type="number" inputmode="decimal" value="100" style="width:78px;flex:none">
+              <input id="fGrams" type="text" inputmode="decimal" value="100" style="width:78px;flex:none">
               <span class="muted">g · ajústala tras escanear</span>
             </div>
             <div class="mgrid">
-              <input id="fK" type="number" inputmode="numeric" placeholder="kcal *">
-              <input id="fP" type="number" inputmode="numeric" placeholder="Prot g">
-              <input id="fF" type="number" inputmode="numeric" placeholder="Grasa g">
-              <input id="fC" type="number" inputmode="numeric" placeholder="Carb g">
+              <input id="fK" type="text" inputmode="decimal" placeholder="kcal *">
+              <input id="fP" type="text" inputmode="decimal" placeholder="Prot g">
+              <input id="fF" type="text" inputmode="decimal" placeholder="Grasa g">
+              <input id="fC" type="text" inputmode="decimal" placeholder="Carb g">
             </div>
             <div class="row" style="margin-top:8px">
               <button class="btn-ok" id="saveFav" style="flex:1">Guardar</button>
@@ -174,7 +174,7 @@ h2{font-size:16px;font-weight:600;margin:0 0 10px}
           <div class="row">
             <select id="catSel" aria-label="Categoría"></select>
             <select id="foodSel" aria-label="Alimento"></select>
-            <input id="gIn" type="number" min="0" step="1" value="100" style="width:66px;flex:none" aria-label="Gramos">
+            <input id="gIn" type="text" inputmode="decimal" min="0" step="1" value="100" style="width:66px;flex:none" aria-label="Gramos">
             <span class="muted">g</span>
             <button id="addBtn">+ Añadir</button>
           </div>
@@ -193,11 +193,11 @@ h2{font-size:16px;font-weight:600;margin:0 0 10px}
             </div>
             <div class="mgrid">
               <input id="cName" type="text" placeholder="Nombre" style="grid-column:1/-1">
-              <input id="cK" type="number" placeholder="kcal">
-              <input id="cP" type="number" placeholder="Prot g">
-              <input id="cF" type="number" placeholder="Grasa g">
-              <input id="cC" type="number" placeholder="Carb g">
-              <input id="cFi" type="number" placeholder="Fibra g">
+              <input id="cK" type="text" inputmode="decimal" placeholder="kcal">
+              <input id="cP" type="text" inputmode="decimal" placeholder="Prot g">
+              <input id="cF" type="text" inputmode="decimal" placeholder="Grasa g">
+              <input id="cC" type="text" inputmode="decimal" placeholder="Carb g">
+              <input id="cFi" type="text" inputmode="decimal" placeholder="Fibra g">
             </div>
             <button id="addCust" style="margin-top:8px;width:100%">+ Añadir manual</button>
           </details>
@@ -208,10 +208,10 @@ h2{font-size:16px;font-weight:600;margin:0 0 10px}
           <div id="quickPicks" class="fchips" style="margin:0 0 12px"></div>
           <input id="qName" type="text" placeholder="Nombre (ej. Menú del día)" style="margin-bottom:8px">
           <div class="mgrid">
-            <input id="qK" type="number" inputmode="numeric" placeholder="kcal *">
-            <input id="qP" type="number" inputmode="numeric" placeholder="Prot g">
-            <input id="qF" type="number" inputmode="numeric" placeholder="Grasa g">
-            <input id="qC" type="number" inputmode="numeric" placeholder="Carb g">
+            <input id="qK" type="text" inputmode="decimal" placeholder="kcal *">
+            <input id="qP" type="text" inputmode="decimal" placeholder="Prot g">
+            <input id="qF" type="text" inputmode="decimal" placeholder="Grasa g">
+            <input id="qC" type="text" inputmode="decimal" placeholder="Carb g">
           </div>
           <button class="btn-primary" id="qAdd" style="margin-top:10px;width:100%">+ Añadir al día</button>
         </div>
@@ -240,7 +240,7 @@ h2{font-size:16px;font-weight:600;margin:0 0 10px}
           <div class="row">
             <select id="rcat" aria-label="Categoría"></select>
             <select id="rfood" aria-label="Alimento"></select>
-            <input id="rg" type="number" min="0" step="1" value="100" style="width:66px;flex:none" aria-label="Gramos">
+            <input id="rg" type="text" inputmode="decimal" min="0" step="1" value="100" style="width:66px;flex:none" aria-label="Gramos">
             <span class="muted">g</span>
             <button id="rAdd">+ ingr.</button>
           </div>
@@ -253,11 +253,11 @@ h2{font-size:16px;font-weight:600;margin:0 0 10px}
             </div>
             <div class="mgrid">
               <input id="rcName" type="text" placeholder="Nombre" style="grid-column:1/-1">
-              <input id="rcK" type="number" placeholder="kcal">
-              <input id="rcP" type="number" placeholder="Prot g">
-              <input id="rcF" type="number" placeholder="Grasa g">
-              <input id="rcC" type="number" placeholder="Carb g">
-              <input id="rcFi" type="number" placeholder="Fibra g">
+              <input id="rcK" type="text" inputmode="decimal" placeholder="kcal">
+              <input id="rcP" type="text" inputmode="decimal" placeholder="Prot g">
+              <input id="rcF" type="text" inputmode="decimal" placeholder="Grasa g">
+              <input id="rcC" type="text" inputmode="decimal" placeholder="Carb g">
+              <input id="rcFi" type="text" inputmode="decimal" placeholder="Fibra g">
             </div>
             <button id="rcAdd" style="margin-top:8px;width:100%">+ Añadir ingrediente manual</button>
           </details>
@@ -265,7 +265,7 @@ h2{font-size:16px;font-weight:600;margin:0 0 10px}
           <div id="draftTotal" class="muted" style="margin-top:6px"></div>
           <div class="row" style="margin-top:10px;align-items:center">
             <span class="muted">Lo divido en</span>
-            <input id="rServings" type="number" min="1" step="1" value="1" style="width:60px;flex:none">
+            <input id="rServings" type="text" inputmode="decimal" min="1" step="1" value="1" style="width:60px;flex:none">
             <span class="muted">porciones (tuppers)</span>
           </div>
           <div class="row" style="margin-top:12px">
@@ -290,14 +290,14 @@ h2{font-size:16px;font-weight:600;margin:0 0 10px}
         <p id="goalSummary" class="muted" style="margin:0 0 4px"></p>
         <p class="muted" style="font-size:12px;margin:0 0 12px">Pon tu peso y pulsa recalcular. Tus datos se recuerdan.</p>
         <div class="wbox">
-          <label class="f">Peso actual (kg)<input id="awNow" type="number" step="0.1" inputmode="decimal"></label>
-          <label class="f">Peso objetivo (kg)<input id="awGoal" type="number" step="0.1" inputmode="decimal"></label>
+          <label class="f">Peso actual (kg)<input id="awNow" type="text" inputmode="decimal" step="0.1"></label>
+          <label class="f">Peso objetivo (kg)<input id="awGoal" type="text" inputmode="decimal" step="0.1"></label>
         </div>
         <details style="margin-top:10px" open>
           <summary>Mis datos</summary>
           <div class="wbox" style="margin-top:10px">
-            <label class="f">Altura (cm)<input id="ah" type="number" inputmode="numeric"></label>
-            <label class="f">Edad<input id="aage" type="number" inputmode="numeric"></label>
+            <label class="f">Altura (cm)<input id="ah" type="text" inputmode="decimal"></label>
+            <label class="f">Edad<input id="aage" type="text" inputmode="decimal"></label>
             <label class="f">Sexo<select id="asex"><option value="F">Mujer</option><option value="M">Hombre</option></select></label>
             <label class="f">Actividad<select id="aact"><option value="1.2">Poco o nada</option><option value="1.375">Ligero (1-3 d/sem)</option><option value="1.55" selected>Moderado (3-5 d/sem)</option><option value="1.725">Intenso (6-7 d/sem)</option><option value="1.9">Muy intenso</option></select></label>
           </div>
@@ -397,13 +397,14 @@ function saveRecipes(){try{localStorage.setItem('macros_recipes',JSON.stringify(
 function saveFavs(){try{localStorage.setItem('macros_favs',JSON.stringify(favs));}catch(e){}}
 var per100=null,bcLoading=null,editingFav=null;
 function ensureBarcode(){if(window.Html5Qrcode)return Promise.resolve();if(bcLoading)return bcLoading;bcLoading=new Promise(function(res,rej){var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js';s.onload=res;s.onerror=rej;document.head.appendChild(s)});return bcLoading}
-function favScale(){if(!per100)return;var g=parseFloat($('fGrams').value)||100,r=g/100;$('fK').value=Math.round(per100.k*r);$('fP').value=Math.round(per100.p*r*10)/10;$('fF').value=Math.round(per100.f*r*10)/10;$('fC').value=Math.round(per100.c*r*10)/10}
-function lookupBarcode(code){$('favScanStatus').textContent='Buscando producto…';fetch('https://world.openfoodfacts.org/api/v2/product/'+encodeURIComponent(code)+'.json?fields=product_name,brands,serving_quantity,nutriments').then(function(r){return r.json()}).then(function(d){if(d.status!==1||!d.product){$('favScanStatus').textContent='No está en la base de datos. Mételo a mano.';return}var p=d.product,nu=p.nutriments||{};per100={k:+nu['energy-kcal_100g']||0,p:+nu.proteins_100g||0,f:+nu.fat_100g||0,c:+nu.carbohydrates_100g||0};if(p.product_name)$('fName').value=(p.product_name+(p.brands?' ('+(''+p.brands).split(',')[0]+')':'')).slice(0,60);var sq=parseFloat(p.serving_quantity);$('fGrams').value=(sq&&sq>0)?sq:100;favScale();$('favScanStatus').textContent='✓ Encontrado · revisa la ración'}).catch(function(){$('favScanStatus').textContent='Sin conexión o error. Reinténtalo.'})}
+function favScale(){if(!per100)return;var g=numv($('fGrams').value)||100,r=g/100;$('fK').value=Math.round(per100.k*r);$('fP').value=Math.round(per100.p*r*10)/10;$('fF').value=Math.round(per100.f*r*10)/10;$('fC').value=Math.round(per100.c*r*10)/10}
+function lookupBarcode(code){$('favScanStatus').textContent='Buscando producto…';fetch('https://world.openfoodfacts.org/api/v2/product/'+encodeURIComponent(code)+'.json?fields=product_name,brands,serving_quantity,nutriments').then(function(r){return r.json()}).then(function(d){if(d.status!==1||!d.product){$('favScanStatus').textContent='No está en la base de datos. Mételo a mano.';return}var p=d.product,nu=p.nutriments||{};per100={k:+nu['energy-kcal_100g']||0,p:+nu.proteins_100g||0,f:+nu.fat_100g||0,c:+nu.carbohydrates_100g||0};if(p.product_name)$('fName').value=(p.product_name+(p.brands?' ('+(''+p.brands).split(',')[0]+')':'')).slice(0,60);var sq=numv(p.serving_quantity);$('fGrams').value=(sq&&sq>0)?sq:100;favScale();$('favScanStatus').textContent='✓ Encontrado · revisa la ración'}).catch(function(){$('favScanStatus').textContent='Sin conexión o error. Reinténtalo.'})}
 function scanBarcodeFile(f){$('favScanStatus').textContent='Leyendo código…';ensureBarcode().then(function(){var h=new Html5Qrcode('bcReader');return h.scanFile(f,false).then(function(txt){try{h.clear()}catch(e){}lookupBarcode(txt)}).catch(function(){try{h.clear()}catch(e){}$('favScanStatus').textContent='No se leyó el código. Acércate, con buena luz, o mételo a mano.'})}).catch(function(){$('favScanStatus').textContent='No se pudo cargar el lector (¿sin conexión la 1ª vez?).'})}
 function renderFavs(){var el=$('favList');if(!el)return;if(!favs.length){el.innerHTML='<div class="muted" style="padding:6px 0">Sin habituales aún. Guarda los que repites (yogur, café…) con «+ Nuevo».</div>';return}var h='';favs.forEach(function(x,i){h+='<div class="rec"><div style="display:flex;align-items:center;gap:8px"><div class="nm" style="flex:1">'+x.name+'<div class="muted" style="font-weight:400">'+Math.round(x.k)+' kcal · P'+Math.round(x.p)+' G'+Math.round(x.f)+' C'+Math.round(x.c)+'</div></div><button class="fedit" data-i="'+i+'" aria-label="Editar" style="background:none;border:none;color:var(--text3);font-size:17px;padding:0 6px;min-height:auto;cursor:pointer">✎</button><button class="fdel delbtn" data-i="'+i+'" aria-label="Eliminar">×</button></div><button class="fadd btn-ok" data-i="'+i+'" style="width:100%;margin-top:8px">+ Añadir al día</button></div>'});el.innerHTML=h}
 function saveProfile(p){try{localStorage.setItem('macros_profile',JSON.stringify(p));}catch(e){}}
 function loadProfile(){try{return JSON.parse(localStorage.getItem('macros_profile'));}catch(e){return null}}
 var $=function(id){return document.getElementById(id)};
+function numv(v){return parseFloat((''+(v==null?'':v)).replace(',','.'))||0}
 function calcGoals(p){
  var sexC=(p.sex==='M')?5:-161;
  var tmb=10*p.wNow+6.25*p.h-5*p.age+sexC;
@@ -414,7 +415,7 @@ function calcGoals(p){
  var carb=Math.max(0,Math.round((cal-prot*4-fat*9)/4));
  return {k:cal,p:prot,f:fat,c:carb,fi:fib};
 }
-function readProfile(px){return {wNow:parseFloat($(px+'wNow').value),wGoal:parseFloat($(px+'wGoal').value),h:parseFloat($(px+'h').value),age:parseFloat($(px+'age').value),sex:$(px+'sex').value,act:parseFloat($(px+'act').value)}}
+function readProfile(px){return {wNow:numv($(px+'wNow').value),wGoal:numv($(px+'wGoal').value),h:numv($(px+'h').value),age:numv($(px+'age').value),sex:$(px+'sex').value,act:numv($(px+'act').value)}}
 function validP(p){return p.wNow>0&&p.wGoal>0&&p.h>0&&p.age>0&&p.act>0}
 function fillProfile(px,p){if(!p)return;if(p.wNow)$(px+'wNow').value=p.wNow;if(p.wGoal)$(px+'wGoal').value=p.wGoal;if(p.h)$(px+'h').value=p.h;if(p.age)$(px+'age').value=p.age;if(p.sex)$(px+'sex').value=p.sex;if(p.act)$(px+'act').value=p.act}
 function goalSummary(){var el=$('goalSummary');if(el)el.textContent='Ahora: '+Math.round(GOALS.k)+' kcal · '+Math.round(GOALS.p)+' g prot · '+Math.round(GOALS.f)+' g grasa · '+Math.round(GOALS.c)+' g carb · '+Math.round(GOALS.fi)+' g fibra'}
@@ -428,7 +429,7 @@ function ensureTesseract(){
 }
 function parseLabel(text){
  var t=(text||'').replace(/ /g,' ');
- function g(re){var m=t.match(re);return m?parseFloat(m[1].replace(',','.')):null}
+ function g(re){var m=t.match(re);return m?numv(m[1].replace(',','.')):null}
  return {
   k:g(/(\d+[.,]?\d*)\s*kcal/i),
   p:g(/prote[ií]na[s]?[^\d\n]{0,10}(\d+[.,]?\d*)/i),
@@ -453,7 +454,7 @@ function fillSel(catEl,foodEl){foodEl.innerHTML='';FOODS[catEl.value].forEach(fu
 function curOf(catEl,foodEl){return FOODS[catEl.value][parseInt(foodEl.value,10)||0]}
 function fillFoods(){fillSel(catSel,foodSel);onFood()}
 function onFood(){var fd=curOf(catSel,foodSel);if(fd)gIn.value=fd.s;prev()}
-function prev(){var fd=curOf(catSel,foodSel);if(!fd)return;var g=parseFloat(gIn.value)||0,r=g/100;$('prev').textContent='= '+Math.round(fd.k*r)+' kcal · P '+Math.round(fd.p*r)+' · G '+Math.round(fd.f*r)+' · C '+Math.round(fd.c*r)+' · Fib '+Math.round(fd.fi*r)+' g'}
+function prev(){var fd=curOf(catSel,foodSel);if(!fd)return;var g=numv(gIn.value)||0,r=g/100;$('prev').textContent='= '+Math.round(fd.k*r)+' kcal · P '+Math.round(fd.p*r)+' · G '+Math.round(fd.f*r)+' · C '+Math.round(fd.c*r)+' · Fib '+Math.round(fd.fi*r)+' g'}
 function rFill(){fillSel(rcat,rfood);rOnFood()}
 function rOnFood(){var fd=curOf(rcat,rfood);if(fd)rg.value=fd.s}
 function totals(){return sumItems(items)}
@@ -480,7 +481,7 @@ function renderDraft(){
  if(!draft.length){dl.innerHTML='<div class="muted">Añade ingredientes con el selector de arriba…</div>';$('draftTotal').textContent='';return}
  var h='';draft.forEach(function(x,i){h+='<div style="display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px"><span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+x.name+(x.grams?' · '+Math.round(x.grams)+' g':'')+'</span><span class="muted">'+Math.round(x.k)+' kcal</span><button class="ddel" data-i="'+i+'" aria-label="Quitar" style="background:none;border:none;color:var(--text3);font-size:18px;padding:0 4px;min-height:auto">×</button></div>'});
  dl.innerHTML=h;
- var t=sumItems(draft),sv=parseFloat($('rServings').value)||1;if(sv<1)sv=1;
+ var t=sumItems(draft),sv=numv($('rServings').value)||1;if(sv<1)sv=1;
  var txt='Total: '+Math.round(t.k)+' kcal · P '+Math.round(t.p)+' · G '+Math.round(t.f)+' · C '+Math.round(t.c)+' · Fib '+Math.round(t.fi)+' g';
  if(sv>1)txt+=' → cada porción: '+Math.round(t.k/sv)+' kcal · P '+Math.round(t.p/sv)+' · G '+Math.round(t.f/sv)+' · C '+Math.round(t.c/sv);
  $('draftTotal').textContent=txt;
@@ -524,27 +525,27 @@ window.addEventListener('DOMContentLoaded',function(){
  var prof=loadProfile();if(prof){fillProfile('s',prof);fillProfile('a',prof)}
  $('startBtn').onclick=function(){var p=readProfile('s');if(!validP(p)){alert('Rellena tu peso actual, objetivo, altura, edad y actividad en «Mis datos».');return}saveProfile(p);GOALS=calcGoals(p);saveG();configured=true;fillProfile('a',p);goalSummary();render();show('app');showSection('macros');window.scrollTo(0,0)};
  $('recalcBtn').onclick=function(){var p=readProfile('a');if(!validP(p)){alert('Rellena tu peso actual, objetivo, altura, edad y actividad.');return}saveProfile(p);GOALS=calcGoals(p);saveG();fillProfile('s',p);goalSummary();render();alert('Objetivos actualizados ✓\n'+GOALS.k+' kcal · '+GOALS.p+' P · '+GOALS.f+' G · '+GOALS.c+' C · '+GOALS.fi+' fibra')};
- $('addBtn').onclick=function(){var fd=curOf(catSel,foodSel),g=parseFloat(gIn.value)||0;if(!fd||g<=0)return;var r=g/100;addDraft.push({name:fd.n,grams:g,k:fd.k*r,p:fd.p*r,f:fd.f*r,c:fd.c*r,fi:fd.fi*r});renderAddDraft()};
+ $('addBtn').onclick=function(){var fd=curOf(catSel,foodSel),g=numv(gIn.value)||0;if(!fd||g<=0)return;var r=g/100;addDraft.push({name:fd.n,grams:g,k:fd.k*r,p:fd.p*r,f:fd.f*r,c:fd.c*r,fi:fd.fi*r});renderAddDraft()};
  $('addDayBtn').onclick=function(){if(!addDraft.length){alert('Añade algún alimento a la lista con «+ Añadir».');return}var nm=($('aName').value||'').trim();if(nm){var t=sumItems(addDraft);add({name:nm,grams:0,k:t.k,p:t.p,f:t.f,c:t.c,fi:t.fi})}else{addDraft.forEach(function(x){add(x)})}addDraft=[];$('aName').value='';renderAddDraft();var b=$('addDayBtn');b.textContent='✓ Añadido';setTimeout(function(){b.textContent='Añadir al día'},900)};
  $('addDraftList').onclick=function(e){var b=e.target.closest('.addel');if(!b)return;addDraft.splice(parseInt(b.getAttribute('data-i'),10),1);renderAddDraft()};
- $('addCust').onclick=function(){add({name:$('cName').value||'Alimento',grams:0,k:parseFloat($('cK').value)||0,p:parseFloat($('cP').value)||0,f:parseFloat($('cF').value)||0,c:parseFloat($('cC').value)||0,fi:parseFloat($('cFi').value)||0});['cName','cK','cP','cF','cC','cFi'].forEach(function(id){$(id).value=''})};
- $('qAdd').onclick=function(){var k=parseFloat($('qK').value)||0;if(k<=0){alert('Pon al menos las calorías estimadas.');return}add({name:($('qName').value||'').trim()||'Comida fuera',grams:0,k:k,p:parseFloat($('qP').value)||0,f:parseFloat($('qF').value)||0,c:parseFloat($('qC').value)||0,fi:0});['qName','qK','qP','qF','qC'].forEach(function(id){$(id).value=''});var b=$('qAdd');b.textContent='✓ Añadido';setTimeout(function(){b.textContent='+ Añadir al día'},900)};
+ $('addCust').onclick=function(){add({name:$('cName').value||'Alimento',grams:0,k:numv($('cK').value)||0,p:numv($('cP').value)||0,f:numv($('cF').value)||0,c:numv($('cC').value)||0,fi:numv($('cFi').value)||0});['cName','cK','cP','cF','cC','cFi'].forEach(function(id){$(id).value=''})};
+ $('qAdd').onclick=function(){var k=numv($('qK').value)||0;if(k<=0){alert('Pon al menos las calorías estimadas.');return}add({name:($('qName').value||'').trim()||'Comida fuera',grams:0,k:k,p:numv($('qP').value)||0,f:numv($('qF').value)||0,c:numv($('qC').value)||0,fi:0});['qName','qK','qP','qF','qC'].forEach(function(id){$(id).value=''});var b=$('qAdd');b.textContent='✓ Añadido';setTimeout(function(){b.textContent='+ Añadir al día'},900)};
  $('newFavBtn').onclick=function(){var b=$('favBuilder');if(b.style.display==='none'){editingFav=null;per100=null;['fName','fK','fP','fF','fC'].forEach(function(id){$(id).value=''});$('fGrams').value=100;$('favScanStatus').textContent='';$('saveFav').textContent='Guardar';b.style.display='block'}else{b.style.display='none'}};
  $('bcBtn').onclick=function(){$('bcFile').click()};
  $('bcFile').onchange=function(){var f=$('bcFile').files&&$('bcFile').files[0];if(f)scanBarcodeFile(f);$('bcFile').value=''};
  $('fGrams').oninput=favScale;
  $('cancelFav').onclick=function(){editingFav=null;['fName','fK','fP','fF','fC'].forEach(function(id){$(id).value=''});$('fGrams').value=100;per100=null;$('favScanStatus').textContent='';$('saveFav').textContent='Guardar';$('favBuilder').style.display='none'};
- $('saveFav').onclick=function(){var k=parseFloat($('fK').value)||0,nm=($('fName').value||'').trim();if(!nm||k<=0){alert('Pon nombre y calorías.');return}var fav={name:nm,k:k,p:parseFloat($('fP').value)||0,f:parseFloat($('fF').value)||0,c:parseFloat($('fC').value)||0,fi:0};if(editingFav!=null){favs[editingFav]=fav;editingFav=null}else{favs.push(fav)}saveFavs();['fName','fK','fP','fF','fC'].forEach(function(id){$(id).value=''});$('fGrams').value=100;per100=null;$('favScanStatus').textContent='';$('saveFav').textContent='Guardar';$('favBuilder').style.display='none';renderFavs()};
+ $('saveFav').onclick=function(){var k=numv($('fK').value)||0,nm=($('fName').value||'').trim();if(!nm||k<=0){alert('Pon nombre y calorías.');return}var fav={name:nm,k:k,p:numv($('fP').value)||0,f:numv($('fF').value)||0,c:numv($('fC').value)||0,fi:0};if(editingFav!=null){favs[editingFav]=fav;editingFav=null}else{favs.push(fav)}saveFavs();['fName','fK','fP','fF','fC'].forEach(function(id){$(id).value=''});$('fGrams').value=100;per100=null;$('favScanStatus').textContent='';$('saveFav').textContent='Guardar';$('favBuilder').style.display='none';renderFavs()};
  $('favList').onclick=function(e){var ed=e.target.closest('.fedit'),a=e.target.closest('.fadd'),del=e.target.closest('.fdel');if(ed){var fi2=parseInt(ed.getAttribute('data-i'),10),x2=favs[fi2];editingFav=fi2;$('fName').value=x2.name;$('fGrams').value=100;per100=null;$('fK').value=x2.k;$('fP').value=x2.p;$('fF').value=x2.f;$('fC').value=x2.c;$('saveFav').textContent='Guardar';$('favScanStatus').textContent='';$('favBuilder').style.display='block';return}if(a){var x=favs[parseInt(a.getAttribute('data-i'),10)];add({name:x.name,grams:0,k:x.k,p:x.p,f:x.f,c:x.c,fi:x.fi||0});a.textContent='✓ Añadido';setTimeout(renderFavs,900);return}if(del){var i=parseInt(del.getAttribute('data-i'),10);if(confirm('¿Eliminar «'+favs[i].name+'» de habituales?')){favs.splice(i,1);saveFavs();renderFavs()}}};
  $('quickPicks').onclick=function(e){var b=e.target.closest('.fchip');if(!b)return;var q=QUICK[parseInt(b.getAttribute('data-qi'),10)];$('qName').value=q.n;$('qK').value=q.k;$('qK').focus()};
  $('log').onclick=function(e){var b=e.target.closest('.delbtn');if(!b)return;items.splice(parseInt(b.getAttribute('data-i'),10),1);persist();render()};
  $('clearBtn').onclick=function(){if(confirm('¿Vaciar todo lo de hoy?')){items=[];persist();render()}};
  $('newRecipeBtn').onclick=function(){var b=$('builder');if(b.style.display==='none'){editingRecipe=null;draft=[];$('rName').value='';$('rServings').value=1;$('rType').value='desayuno';$('saveRecipe').textContent='Guardar receta';renderDraft();b.style.display='block'}else{b.style.display='none'}};
  $('cancelRecipe').onclick=function(){draft=[];editingRecipe=null;$('rName').value='';$('rServings').value=1;$('saveRecipe').textContent='Guardar receta';renderDraft();$('builder').style.display='none'};
- $('rAdd').onclick=function(){var fd=curOf(rcat,rfood),g=parseFloat(rg.value)||0;if(!fd||g<=0)return;var r=g/100;draft.push({name:fd.n,grams:g,k:fd.k*r,p:fd.p*r,f:fd.f*r,c:fd.c*r,fi:fd.fi*r});renderDraft()};
- $('rcAdd').onclick=function(){draft.push({name:$('rcName').value||'Ingrediente',grams:0,k:parseFloat($('rcK').value)||0,p:parseFloat($('rcP').value)||0,f:parseFloat($('rcF').value)||0,c:parseFloat($('rcC').value)||0,fi:parseFloat($('rcFi').value)||0});['rcName','rcK','rcP','rcF','rcC','rcFi'].forEach(function(id){$(id).value=''});renderDraft()};
+ $('rAdd').onclick=function(){var fd=curOf(rcat,rfood),g=numv(rg.value)||0;if(!fd||g<=0)return;var r=g/100;draft.push({name:fd.n,grams:g,k:fd.k*r,p:fd.p*r,f:fd.f*r,c:fd.c*r,fi:fd.fi*r});renderDraft()};
+ $('rcAdd').onclick=function(){draft.push({name:$('rcName').value||'Ingrediente',grams:0,k:numv($('rcK').value)||0,p:numv($('rcP').value)||0,f:numv($('rcF').value)||0,c:numv($('rcC').value)||0,fi:numv($('rcFi').value)||0});['rcName','rcK','rcP','rcF','rcC','rcFi'].forEach(function(id){$(id).value=''});renderDraft()};
  $('draftList').onclick=function(e){var b=e.target.closest('.ddel');if(!b)return;draft.splice(parseInt(b.getAttribute('data-i'),10),1);renderDraft()};
- $('saveRecipe').onclick=function(){var nm=($('rName').value||'').trim()||'Receta';var sv=parseFloat($('rServings').value)||1;if(sv<1)sv=1;var t;if(draft.length){t=sumItems(draft)}else if(editingRecipe!=null){var o=recipes[editingRecipe];t={k:o.k,p:o.p,f:o.f,c:o.c,fi:o.fi}}else{alert('Añade al menos un ingrediente a la receta.');return}var rec={name:nm,type:$('rType').value,servings:sv,k:t.k,p:t.p,f:t.f,c:t.c,fi:t.fi,items:draft.length?draft.slice():((editingRecipe!=null&&recipes[editingRecipe].items)||[])};if(editingRecipe!=null){recipes[editingRecipe]=rec;editingRecipe=null}else{recipes.push(rec)}saveRecipes();draft=[];$('rName').value='';$('rServings').value=1;$('saveRecipe').textContent='Guardar receta';renderDraft();renderRecipes();renderAddRecipes();$('builder').style.display='none'};
+ $('saveRecipe').onclick=function(){var nm=($('rName').value||'').trim()||'Receta';var sv=numv($('rServings').value)||1;if(sv<1)sv=1;var t;if(draft.length){t=sumItems(draft)}else if(editingRecipe!=null){var o=recipes[editingRecipe];t={k:o.k,p:o.p,f:o.f,c:o.c,fi:o.fi}}else{alert('Añade al menos un ingrediente a la receta.');return}var rec={name:nm,type:$('rType').value,servings:sv,k:t.k,p:t.p,f:t.f,c:t.c,fi:t.fi,items:draft.length?draft.slice():((editingRecipe!=null&&recipes[editingRecipe].items)||[])};if(editingRecipe!=null){recipes[editingRecipe]=rec;editingRecipe=null}else{recipes.push(rec)}saveRecipes();draft=[];$('rName').value='';$('rServings').value=1;$('saveRecipe').textContent='Guardar receta';renderDraft();renderRecipes();renderAddRecipes();$('builder').style.display='none'};
  $('recipeList').onclick=function(e){var ed=e.target.closest('.redit'),a=e.target.closest('.radd'),del=e.target.closest('.rdel');if(ed){var ri=parseInt(ed.getAttribute('data-i'),10),rr=recipes[ri];editingRecipe=ri;$('rName').value=rr.name;$('rType').value=rr.type||'desayuno';$('rServings').value=rr.servings||1;draft=(rr.items&&rr.items.slice())||[];renderDraft();$('saveRecipe').textContent='Guardar cambios';$('builder').style.display='block';return}if(a){var r=recipes[parseInt(a.getAttribute('data-i'),10)],sv=r.servings||1,fac=1/sv;add({name:r.name+' (1 porción)',grams:0,k:r.k*fac,p:r.p*fac,f:r.f*fac,c:r.c*fac,fi:r.fi*fac});return}if(del){var i=parseInt(del.getAttribute('data-i'),10);if(confirm('¿Eliminar la receta «'+recipes[i].name+'»?')){recipes.splice(i,1);saveRecipes();renderRecipes();renderAddRecipes()}}};
  $('recipeFilters').onclick=function(e){var b=e.target.closest('.fchip');if(!b)return;setRFilter(b.getAttribute('data-f'))};
  setScan('scanDayBtn','scanDay','scanDayStatus',{k:'cK',p:'cP',f:'cF',c:'cC',fi:'cFi'});
