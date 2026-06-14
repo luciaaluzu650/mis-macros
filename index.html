@@ -144,7 +144,18 @@ h2{font-size:16px;font-weight:600;margin:0 0 10px}
             <button id="newFavBtn" style="font-size:13px;padding:6px 12px;min-height:auto">+ Nuevo</button>
           </div>
           <div id="favBuilder" style="display:none;margin-top:12px;border-top:.5px solid var(--border);padding-top:12px">
+            <div class="row" style="margin-bottom:8px">
+              <input id="bcFile" type="file" accept="image/*" capture="environment" style="display:none">
+              <button id="bcBtn" type="button" class="btn-scan">📷 Escanear código de barras</button>
+              <span id="favScanStatus" class="muted"></span>
+            </div>
+            <div id="bcReader" style="display:none"></div>
             <input id="fName" type="text" placeholder="Nombre (ej. Yogur griego, Café con leche)" style="margin-bottom:8px">
+            <div class="row" style="margin-bottom:8px;align-items:center">
+              <span class="muted">Ración</span>
+              <input id="fGrams" type="number" inputmode="decimal" value="100" style="width:78px;flex:none">
+              <span class="muted">g · ajústala tras escanear</span>
+            </div>
             <div class="mgrid">
               <input id="fK" type="number" inputmode="numeric" placeholder="kcal *">
               <input id="fP" type="number" inputmode="numeric" placeholder="Prot g">
@@ -380,6 +391,11 @@ function persist(){try{localStorage.setItem(dayKey,JSON.stringify(items));}catch
 function saveG(){try{localStorage.setItem('macros_goals',JSON.stringify(GOALS));}catch(e){}}
 function saveRecipes(){try{localStorage.setItem('macros_recipes',JSON.stringify(recipes));}catch(e){}}
 function saveFavs(){try{localStorage.setItem('macros_favs',JSON.stringify(favs));}catch(e){}}
+var per100=null,bcLoading=null;
+function ensureBarcode(){if(window.Html5Qrcode)return Promise.resolve();if(bcLoading)return bcLoading;bcLoading=new Promise(function(res,rej){var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js';s.onload=res;s.onerror=rej;document.head.appendChild(s)});return bcLoading}
+function favScale(){if(!per100)return;var g=parseFloat($('fGrams').value)||100,r=g/100;$('fK').value=Math.round(per100.k*r);$('fP').value=Math.round(per100.p*r*10)/10;$('fF').value=Math.round(per100.f*r*10)/10;$('fC').value=Math.round(per100.c*r*10)/10}
+function lookupBarcode(code){$('favScanStatus').textContent='Buscando producto…';fetch('https://world.openfoodfacts.org/api/v2/product/'+encodeURIComponent(code)+'.json?fields=product_name,brands,serving_quantity,nutriments').then(function(r){return r.json()}).then(function(d){if(d.status!==1||!d.product){$('favScanStatus').textContent='No está en la base de datos. Mételo a mano.';return}var p=d.product,nu=p.nutriments||{};per100={k:+nu['energy-kcal_100g']||0,p:+nu.proteins_100g||0,f:+nu.fat_100g||0,c:+nu.carbohydrates_100g||0};if(p.product_name)$('fName').value=(p.product_name+(p.brands?' ('+(''+p.brands).split(',')[0]+')':'')).slice(0,60);var sq=parseFloat(p.serving_quantity);$('fGrams').value=(sq&&sq>0)?sq:100;favScale();$('favScanStatus').textContent='✓ Encontrado · revisa la ración'}).catch(function(){$('favScanStatus').textContent='Sin conexión o error. Reinténtalo.'})}
+function scanBarcodeFile(f){$('favScanStatus').textContent='Leyendo código…';ensureBarcode().then(function(){var h=new Html5Qrcode('bcReader');return h.scanFile(f,false).then(function(txt){try{h.clear()}catch(e){}lookupBarcode(txt)}).catch(function(){try{h.clear()}catch(e){}$('favScanStatus').textContent='No se leyó el código. Acércate, con buena luz, o mételo a mano.'})}).catch(function(){$('favScanStatus').textContent='No se pudo cargar el lector (¿sin conexión la 1ª vez?).'})}
 function renderFavs(){var el=$('favList');if(!el)return;if(!favs.length){el.innerHTML='<div class="muted" style="padding:6px 0">Sin habituales aún. Guarda los que repites (yogur, café…) con «+ Nuevo».</div>';return}var h='';favs.forEach(function(x,i){h+='<div class="rec"><div style="display:flex;align-items:center;gap:8px"><div class="nm" style="flex:1">'+x.name+'<div class="muted" style="font-weight:400">'+Math.round(x.k)+' kcal · P'+Math.round(x.p)+' G'+Math.round(x.f)+' C'+Math.round(x.c)+'</div></div><button class="fdel delbtn" data-i="'+i+'" aria-label="Eliminar">×</button></div><button class="fadd btn-ok" data-i="'+i+'" style="width:100%;margin-top:8px">+ Añadir al día</button></div>'});el.innerHTML=h}
 function saveProfile(p){try{localStorage.setItem('macros_profile',JSON.stringify(p));}catch(e){}}
 function loadProfile(){try{return JSON.parse(localStorage.getItem('macros_profile'));}catch(e){return null}}
@@ -507,8 +523,11 @@ window.addEventListener('DOMContentLoaded',function(){
  $('addCust').onclick=function(){add({name:$('cName').value||'Alimento',grams:0,k:parseFloat($('cK').value)||0,p:parseFloat($('cP').value)||0,f:parseFloat($('cF').value)||0,c:parseFloat($('cC').value)||0,fi:parseFloat($('cFi').value)||0});['cName','cK','cP','cF','cC','cFi'].forEach(function(id){$(id).value=''})};
  $('qAdd').onclick=function(){var k=parseFloat($('qK').value)||0;if(k<=0){alert('Pon al menos las calorías estimadas.');return}add({name:($('qName').value||'').trim()||'Comida fuera',grams:0,k:k,p:parseFloat($('qP').value)||0,f:parseFloat($('qF').value)||0,c:parseFloat($('qC').value)||0,fi:0});['qName','qK','qP','qF','qC'].forEach(function(id){$(id).value=''});var b=$('qAdd');b.textContent='✓ Añadido';setTimeout(function(){b.textContent='+ Añadir al día'},900)};
  $('newFavBtn').onclick=function(){var b=$('favBuilder');b.style.display=(b.style.display==='none')?'block':'none'};
- $('cancelFav').onclick=function(){['fName','fK','fP','fF','fC'].forEach(function(id){$(id).value=''});$('favBuilder').style.display='none'};
- $('saveFav').onclick=function(){var k=parseFloat($('fK').value)||0,nm=($('fName').value||'').trim();if(!nm||k<=0){alert('Pon nombre y calorías.');return}favs.push({name:nm,k:k,p:parseFloat($('fP').value)||0,f:parseFloat($('fF').value)||0,c:parseFloat($('fC').value)||0,fi:0});saveFavs();['fName','fK','fP','fF','fC'].forEach(function(id){$(id).value=''});$('favBuilder').style.display='none';renderFavs()};
+ $('bcBtn').onclick=function(){$('bcFile').click()};
+ $('bcFile').onchange=function(){var f=$('bcFile').files&&$('bcFile').files[0];if(f)scanBarcodeFile(f);$('bcFile').value=''};
+ $('fGrams').oninput=favScale;
+ $('cancelFav').onclick=function(){['fName','fK','fP','fF','fC'].forEach(function(id){$(id).value=''});$('fGrams').value=100;per100=null;$('favScanStatus').textContent='';$('favBuilder').style.display='none'};
+ $('saveFav').onclick=function(){var k=parseFloat($('fK').value)||0,nm=($('fName').value||'').trim();if(!nm||k<=0){alert('Pon nombre y calorías.');return}favs.push({name:nm,k:k,p:parseFloat($('fP').value)||0,f:parseFloat($('fF').value)||0,c:parseFloat($('fC').value)||0,fi:0});saveFavs();['fName','fK','fP','fF','fC'].forEach(function(id){$(id).value=''});$('fGrams').value=100;per100=null;$('favScanStatus').textContent='';$('favBuilder').style.display='none';renderFavs()};
  $('favList').onclick=function(e){var a=e.target.closest('.fadd'),del=e.target.closest('.fdel');if(a){var x=favs[parseInt(a.getAttribute('data-i'),10)];add({name:x.name,grams:0,k:x.k,p:x.p,f:x.f,c:x.c,fi:x.fi||0});a.textContent='✓ Añadido';setTimeout(renderFavs,900);return}if(del){var i=parseInt(del.getAttribute('data-i'),10);if(confirm('¿Eliminar «'+favs[i].name+'» de habituales?')){favs.splice(i,1);saveFavs();renderFavs()}}};
  $('quickPicks').onclick=function(e){var b=e.target.closest('.fchip');if(!b)return;var q=QUICK[parseInt(b.getAttribute('data-qi'),10)];$('qName').value=q.n;$('qK').value=q.k;$('qK').focus()};
  $('log').onclick=function(e){var b=e.target.closest('.delbtn');if(!b)return;items.splice(parseInt(b.getAttribute('data-i'),10),1);persist();render()};
