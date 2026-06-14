@@ -24,10 +24,16 @@ html,body{margin:0}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;line-height:1.5;-webkit-text-size-adjust:100%;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 .wrap{max-width:540px;margin:0 auto;padding:14px 16px 60px}
 .card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:12px}
-.tabbar{position:sticky;top:0;background:var(--bg);padding:8px 0 8px;z-index:10}
-.tabs{display:flex;gap:6px;background:var(--s2);padding:4px;border-radius:10px}
-.tab{flex:1;background:transparent;border:none;border-radius:8px;padding:9px 2px;min-height:40px;font-weight:500;font-size:13px;white-space:nowrap;color:var(--text2);cursor:pointer}
-.tab.active{background:var(--surface);color:var(--text)}
+.topbar{position:sticky;top:0;background:var(--bg);display:flex;align-items:center;gap:10px;padding:6px 0 12px;z-index:10}
+.topbar #menuBtn{background:transparent;border:none;font-size:22px;padding:6px 10px;min-height:auto;line-height:1;color:var(--text);cursor:pointer}
+#secTitle{font-size:18px;font-weight:600}
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);opacity:0;visibility:hidden;transition:opacity .2s;z-index:20}
+#overlay.open{opacity:1;visibility:visible}
+#drawer{position:fixed;top:0;left:0;bottom:0;width:240px;max-width:80%;background:var(--surface);border-right:.5px solid var(--border);transform:translateX(-100%);transition:transform .25s ease;z-index:21;padding:14px 12px;padding-top:calc(env(safe-area-inset-top) + 16px);display:flex;flex-direction:column;gap:4px}
+#drawer.open{transform:translateX(0)}
+.drawer-h{font-size:17px;font-weight:600;padding:6px 12px 14px;color:var(--text)}
+.navitem{text-align:left;background:transparent;border:none;border-radius:8px;padding:12px;font-size:15px;font-weight:500;color:var(--text);cursor:pointer}
+.navitem.active{background:var(--s2)}
 .track{background:var(--s3);border-radius:999px;height:8px;overflow:hidden;margin-top:6px}
 .fill{height:100%;border-radius:999px;transition:width .3s}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
@@ -89,12 +95,18 @@ h2{font-size:16px;font-weight:600;margin:0 0 10px}
   </div>
 
   <div id="app" style="display:none">
-    <div class="tabbar"><div class="tabs">
-      <button class="tab active" data-tab="macros" type="button">Mis macros</button>
-      <button class="tab" data-tab="recetas" type="button">Recetas</button>
-      <button class="tab" data-tab="historial" type="button">Historial</button>
-      <button class="tab" data-tab="objetivos" type="button">Objetivos</button>
-    </div></div>
+    <div class="topbar">
+      <button id="menuBtn" type="button" aria-label="Abrir menú">☰</button>
+      <div id="secTitle">Mis macros</div>
+    </div>
+    <div id="overlay"></div>
+    <nav id="drawer">
+      <div class="drawer-h">🍎 Mis macros</div>
+      <button class="navitem active" data-sec="macros" type="button">Resumen del día</button>
+      <button class="navitem" data-sec="recetas" type="button">Recetas</button>
+      <button class="navitem" data-sec="historial" type="button">Historial</button>
+      <button class="navitem" data-sec="objetivos" type="button">Objetivos</button>
+    </nav>
 
     <div id="tab-macros">
       <div class="card" style="text-align:center">
@@ -405,12 +417,15 @@ function renderHistInfo(){var info=$('histInfo');if(!info)return;if(!histSel){in
 function renderHistory(){var el=$('histList');if(!el)return;if(histY==null){var n=new Date();histY=n.getFullYear();histMo=n.getMonth()+1}var map=histMap();var off=(new Date(histY,histMo-1,1).getDay()+6)%7;var ndays=new Date(histY,histMo,0).getDate();var td=new Date(),tY=td.getFullYear(),tMo=td.getMonth()+1,tD=td.getDate();var h='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><button id="histPrev" style="min-height:36px;padding:6px 14px">‹</button><div style="font-weight:600">'+MESES[histMo-1]+' '+histY+'</div><button id="histNext" style="min-height:36px;padding:6px 14px">›</button></div><div class="calhead"><div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div></div><div class="cal">';for(var i=0;i<off;i++)h+='<div></div>';for(var dd=1;dd<=ndays;dd++){var has=!!map[histY+'-'+histMo+'-'+dd];var cls='cald'+(has?' has':'')+((histY===tY&&histMo===tMo&&dd===tD)?' today':'')+(histSel===dd?' sel':'');h+='<button class="'+cls+'" data-d="'+dd+'">'+dd+'</button>'}h+='</div><div id="histInfo" style="margin-top:14px"></div>';el.innerHTML=h;$('histPrev').onclick=function(){histMo--;if(histMo<1){histMo=12;histY--}histSel=null;renderHistory()};$('histNext').onclick=function(){histMo++;if(histMo>12){histMo=1;histY++}histSel=null;renderHistory()};renderHistInfo()}
 function add(it){items.push(it);persist();render()}
 function show(w){$('setup').style.display=(w==='setup')?'block':'none';$('app').style.display=(w==='app')?'block':'none'}
-function showTab(name){['macros','recetas','historial','objetivos'].forEach(function(n){var el=$('tab-'+n);if(el)el.style.display=(n===name)?'block':'none'});var bs=document.querySelectorAll('.tab');for(var i=0;i<bs.length;i++){bs[i].className='tab'+(bs[i].getAttribute('data-tab')===name?' active':'')}if(name==='historial')renderHistory()}
+function openDrawer(){$('drawer').classList.add('open');$('overlay').classList.add('open')}
+function closeDrawer(){$('drawer').classList.remove('open');$('overlay').classList.remove('open')}
+var SECT={macros:'Mis macros',recetas:'Recetas',historial:'Historial',objetivos:'Objetivos'};
+function showSection(name){['macros','recetas','historial','objetivos'].forEach(function(n){var el=$('tab-'+n);if(el)el.style.display=(n===name)?'block':'none'});$('secTitle').textContent=SECT[name]||'';var ns=document.querySelectorAll('.navitem');for(var i=0;i<ns.length;i++){ns[i].className='navitem'+(ns[i].getAttribute('data-sec')===name?' active':'')}if(name==='historial')renderHistory();closeDrawer();window.scrollTo(0,0)}
 window.addEventListener('DOMContentLoaded',function(){
  catSel=$('catSel');foodSel=$('foodSel');gIn=$('gIn');rcat=$('rcat');rfood=$('rfood');rg=$('rg');
  Object.keys(FOODS).forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;catSel.appendChild(o);var o2=document.createElement('option');o2.value=c;o2.textContent=c;rcat.appendChild(o2)});
  var prof=loadProfile();if(prof){fillProfile('s',prof);fillProfile('a',prof)}
- $('startBtn').onclick=function(){var p=readProfile('s');if(!validP(p)){alert('Rellena tu peso actual, objetivo, altura, edad y actividad en «Mis datos».');return}saveProfile(p);GOALS=calcGoals(p);saveG();configured=true;fillProfile('a',p);goalSummary();render();show('app');showTab('macros');window.scrollTo(0,0)};
+ $('startBtn').onclick=function(){var p=readProfile('s');if(!validP(p)){alert('Rellena tu peso actual, objetivo, altura, edad y actividad en «Mis datos».');return}saveProfile(p);GOALS=calcGoals(p);saveG();configured=true;fillProfile('a',p);goalSummary();render();show('app');showSection('macros');window.scrollTo(0,0)};
  $('recalcBtn').onclick=function(){var p=readProfile('a');if(!validP(p)){alert('Rellena tu peso actual, objetivo, altura, edad y actividad.');return}saveProfile(p);GOALS=calcGoals(p);saveG();fillProfile('s',p);goalSummary();render();alert('Objetivos actualizados ✓\n'+GOALS.k+' kcal · '+GOALS.p+' P · '+GOALS.f+' G · '+GOALS.c+' C · '+GOALS.fi+' fibra')};
  $('addBtn').onclick=function(){var fd=curOf(catSel,foodSel),g=parseFloat(gIn.value)||0;if(!fd||g<=0)return;var r=g/100;add({name:fd.n,grams:g,k:fd.k*r,p:fd.p*r,f:fd.f*r,c:fd.c*r,fi:fd.fi*r})};
  $('addCust').onclick=function(){add({name:$('cName').value||'Alimento',grams:0,k:parseFloat($('cK').value)||0,p:parseFloat($('cP').value)||0,f:parseFloat($('cF').value)||0,c:parseFloat($('cC').value)||0,fi:parseFloat($('cFi').value)||0});['cName','cK','cP','cF','cC','cFi'].forEach(function(id){$(id).value=''})};
@@ -427,10 +442,11 @@ window.addEventListener('DOMContentLoaded',function(){
  setScan('scanRecBtn','scanRec','scanRecStatus',{k:'rcK',p:'rcP',f:'rcF',c:'rcC',fi:'rcFi'});
  catSel.onchange=fillFoods;foodSel.onchange=onFood;gIn.oninput=prev;
  rcat.onchange=rFill;rfood.onchange=rOnFood;$('rServings').oninput=renderDraft;
- var tb=document.querySelectorAll('.tab');for(var i=0;i<tb.length;i++){(function(btn){btn.onclick=function(){showTab(btn.getAttribute('data-tab'))}})(tb[i])}
+ var ni=document.querySelectorAll('.navitem');for(var i=0;i<ni.length;i++){(function(btn){btn.onclick=function(){showSection(btn.getAttribute('data-sec'))}})(ni[i])}
+ $('menuBtn').onclick=openDrawer;$('overlay').onclick=closeDrawer;
  $('histList').onclick=function(e){var b=e.target.closest('.cald');if(!b)return;histSel=parseInt(b.getAttribute('data-d'),10);renderHistory()};
  load();fillFoods();rFill();goalSummary();renderDraft();renderRecipes();render();
- show(configured?'app':'setup');showTab('macros');
+ show(configured?'app':'setup');showSection('macros');
 });
 })();
 </script>
