@@ -26,7 +26,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:12px}
 .tabbar{position:sticky;top:0;background:var(--bg);padding:8px 0 8px;z-index:10}
 .tabs{display:flex;gap:6px;background:var(--s2);padding:4px;border-radius:10px}
-.tab{flex:1;background:transparent;border:none;border-radius:8px;padding:9px 4px;min-height:40px;font-weight:500;font-size:14px;white-space:nowrap;color:var(--text2);cursor:pointer}
+.tab{flex:1;background:transparent;border:none;border-radius:8px;padding:9px 2px;min-height:40px;font-weight:500;font-size:13px;white-space:nowrap;color:var(--text2);cursor:pointer}
 .tab.active{background:var(--surface);color:var(--text)}
 .track{background:var(--s3);border-radius:999px;height:8px;overflow:hidden;margin-top:6px}
 .fill{height:100%;border-radius:999px;transition:width .3s}
@@ -93,6 +93,7 @@ h2{font-size:16px;font-weight:600;margin:0 0 10px}
       <button class="tab active" data-tab="macros" type="button">Mis macros</button>
       <button class="tab" data-tab="recetas" type="button">Recetas</button>
       <button class="tab" data-tab="historial" type="button">Historial</button>
+      <button class="tab" data-tab="objetivos" type="button">Objetivos</button>
     </div></div>
 
     <div id="tab-macros">
@@ -139,26 +140,6 @@ h2{font-size:16px;font-weight:600;margin:0 0 10px}
         </div>
         <div id="log" style="margin-top:8px"></div>
       </div>
-      <details class="card">
-        <summary>Ajustar mis objetivos</summary>
-        <p id="goalSummary" class="muted" style="margin:10px 0 4px"></p>
-        <p class="muted" style="font-size:12px;margin:0 0 12px">Cambia tu peso y pulsa recalcular. Tus datos se recuerdan.</p>
-        <div class="wbox">
-          <label class="f">Peso actual (kg)<input id="awNow" type="number" step="0.1" inputmode="decimal"></label>
-          <label class="f">Peso objetivo (kg)<input id="awGoal" type="number" step="0.1" inputmode="decimal"></label>
-        </div>
-        <details style="margin-top:10px">
-          <summary>Mis datos</summary>
-          <div class="wbox" style="margin-top:10px">
-            <label class="f">Altura (cm)<input id="ah" type="number" inputmode="numeric"></label>
-            <label class="f">Edad<input id="aage" type="number" inputmode="numeric"></label>
-            <label class="f">Sexo<select id="asex"><option value="F">Mujer</option><option value="M">Hombre</option></select></label>
-            <label class="f">Actividad<select id="aact"><option value="1.2">Poco o nada</option><option value="1.375">Ligero (1-3 d/sem)</option><option value="1.55" selected>Moderado (3-5 d/sem)</option><option value="1.725">Intenso (6-7 d/sem)</option><option value="1.9">Muy intenso</option></select></label>
-          </div>
-        </details>
-        <button id="recalcBtn" style="margin-top:12px;width:100%">Recalcular objetivos</button>
-        <p class="muted" style="text-align:center;margin:12px 0 0">Tus datos se guardan solo en este dispositivo.</p>
-      </details>
     </div>
 
     <div id="tab-recetas" style="display:none">
@@ -214,6 +195,29 @@ h2{font-size:16px;font-weight:600;margin:0 0 10px}
       <div class="card">
         <h2>Historial</h2>
         <div id="histList"></div>
+      </div>
+    </div>
+
+    <div id="tab-objetivos" style="display:none">
+      <div class="card">
+        <h2>Ajustar mis objetivos</h2>
+        <p id="goalSummary" class="muted" style="margin:0 0 4px"></p>
+        <p class="muted" style="font-size:12px;margin:0 0 12px">Pon tu peso y pulsa recalcular. Tus datos se recuerdan.</p>
+        <div class="wbox">
+          <label class="f">Peso actual (kg)<input id="awNow" type="number" step="0.1" inputmode="decimal"></label>
+          <label class="f">Peso objetivo (kg)<input id="awGoal" type="number" step="0.1" inputmode="decimal"></label>
+        </div>
+        <details style="margin-top:10px" open>
+          <summary>Mis datos</summary>
+          <div class="wbox" style="margin-top:10px">
+            <label class="f">Altura (cm)<input id="ah" type="number" inputmode="numeric"></label>
+            <label class="f">Edad<input id="aage" type="number" inputmode="numeric"></label>
+            <label class="f">Sexo<select id="asex"><option value="F">Mujer</option><option value="M">Hombre</option></select></label>
+            <label class="f">Actividad<select id="aact"><option value="1.2">Poco o nada</option><option value="1.375">Ligero (1-3 d/sem)</option><option value="1.55" selected>Moderado (3-5 d/sem)</option><option value="1.725">Intenso (6-7 d/sem)</option><option value="1.9">Muy intenso</option></select></label>
+          </div>
+        </details>
+        <button class="btn-primary" id="recalcBtn" style="margin-top:12px;width:100%">Recalcular objetivos</button>
+        <p class="muted" style="text-align:center;margin:12px 0 0">Tus datos se guardan solo en este dispositivo.</p>
       </div>
     </div>
   </div>
@@ -401,7 +405,7 @@ function renderHistInfo(){var info=$('histInfo');if(!info)return;if(!histSel){in
 function renderHistory(){var el=$('histList');if(!el)return;if(histY==null){var n=new Date();histY=n.getFullYear();histMo=n.getMonth()+1}var map=histMap();var off=(new Date(histY,histMo-1,1).getDay()+6)%7;var ndays=new Date(histY,histMo,0).getDate();var td=new Date(),tY=td.getFullYear(),tMo=td.getMonth()+1,tD=td.getDate();var h='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><button id="histPrev" style="min-height:36px;padding:6px 14px">‹</button><div style="font-weight:600">'+MESES[histMo-1]+' '+histY+'</div><button id="histNext" style="min-height:36px;padding:6px 14px">›</button></div><div class="calhead"><div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div></div><div class="cal">';for(var i=0;i<off;i++)h+='<div></div>';for(var dd=1;dd<=ndays;dd++){var has=!!map[histY+'-'+histMo+'-'+dd];var cls='cald'+(has?' has':'')+((histY===tY&&histMo===tMo&&dd===tD)?' today':'')+(histSel===dd?' sel':'');h+='<button class="'+cls+'" data-d="'+dd+'">'+dd+'</button>'}h+='</div><div id="histInfo" style="margin-top:14px"></div>';el.innerHTML=h;$('histPrev').onclick=function(){histMo--;if(histMo<1){histMo=12;histY--}histSel=null;renderHistory()};$('histNext').onclick=function(){histMo++;if(histMo>12){histMo=1;histY++}histSel=null;renderHistory()};renderHistInfo()}
 function add(it){items.push(it);persist();render()}
 function show(w){$('setup').style.display=(w==='setup')?'block':'none';$('app').style.display=(w==='app')?'block':'none'}
-function showTab(name){['macros','recetas','historial'].forEach(function(n){var el=$('tab-'+n);if(el)el.style.display=(n===name)?'block':'none'});var bs=document.querySelectorAll('.tab');for(var i=0;i<bs.length;i++){bs[i].className='tab'+(bs[i].getAttribute('data-tab')===name?' active':'')}if(name==='historial')renderHistory()}
+function showTab(name){['macros','recetas','historial','objetivos'].forEach(function(n){var el=$('tab-'+n);if(el)el.style.display=(n===name)?'block':'none'});var bs=document.querySelectorAll('.tab');for(var i=0;i<bs.length;i++){bs[i].className='tab'+(bs[i].getAttribute('data-tab')===name?' active':'')}if(name==='historial')renderHistory()}
 window.addEventListener('DOMContentLoaded',function(){
  catSel=$('catSel');foodSel=$('foodSel');gIn=$('gIn');rcat=$('rcat');rfood=$('rfood');rg=$('rg');
  Object.keys(FOODS).forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;catSel.appendChild(o);var o2=document.createElement('option');o2.value=c;o2.textContent=c;rcat.appendChild(o2)});
