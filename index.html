@@ -189,8 +189,9 @@ h2{font-size:16px;font-weight:600;margin:0 0 10px}
           <div id="draftList" style="margin-top:12px"></div>
           <div id="draftTotal" class="muted" style="margin-top:6px"></div>
           <div class="row" style="margin-top:10px;align-items:center">
-            <span class="muted">Porciones que salen</span>
-            <input id="rServings" type="number" min="1" step="1" value="1" style="width:64px;flex:none">
+            <span class="muted">Lo divido en</span>
+            <input id="rServings" type="number" min="1" step="1" value="1" style="width:60px;flex:none">
+            <span class="muted">porciones (tuppers)</span>
           </div>
           <div class="row" style="margin-top:12px">
             <button class="btn-ok" id="saveRecipe" style="flex:1">Guardar receta</button>
@@ -368,13 +369,13 @@ function renderDraft(){
  dl.innerHTML=h;
  var t=sumItems(draft),sv=parseFloat($('rServings').value)||1;if(sv<1)sv=1;
  var txt='Total: '+Math.round(t.k)+' kcal · P '+Math.round(t.p)+' · G '+Math.round(t.f)+' · C '+Math.round(t.c)+' · Fib '+Math.round(t.fi)+' g';
- if(sv>1)txt+=' · por porción: '+Math.round(t.k/sv)+' kcal · P '+Math.round(t.p/sv)+' · G '+Math.round(t.f/sv)+' · C '+Math.round(t.c/sv);
+ if(sv>1)txt+=' → cada porción: '+Math.round(t.k/sv)+' kcal · P '+Math.round(t.p/sv)+' · G '+Math.round(t.f/sv)+' · C '+Math.round(t.c/sv);
  $('draftTotal').textContent=txt;
 }
 function renderRecipes(){
  var rl=$('recipeList');
  if(!recipes.length){rl.innerHTML='<div class="muted" style="padding:6px 0">Sin recetas aún. Crea una con «+ Nueva» (ej. tu desayuno) y añádela cada día con un toque.</div>';return}
- var h='';recipes.forEach(function(r,i){var sv=r.servings||1;h+='<div class="rec"><div style="display:flex;align-items:center;gap:8px"><div class="nm" style="flex:1">'+r.name+'</div><button class="rdel delbtn" data-i="'+i+'" aria-label="Eliminar receta">×</button></div><div class="muted">por porción: '+Math.round(r.k/sv)+' kcal · P'+Math.round(r.p/sv)+' G'+Math.round(r.f/sv)+' C'+Math.round(r.c/sv)+(sv>1?' · rinde '+sv:'')+'</div><div style="display:flex;align-items:center;gap:8px;margin-top:8px"><span class="muted">Porciones</span><input class="rport" type="number" min="0" step="0.5" value="1" style="width:58px;flex:none"><button class="radd btn-ok" data-i="'+i+'" style="flex:1">+ Añadir al día</button></div></div>'});
+ var h='';recipes.forEach(function(r,i){var sv=r.servings||1;h+='<div class="rec"><div style="display:flex;align-items:center;gap:8px"><div class="nm" style="flex:1">'+r.name+'</div><button class="rdel delbtn" data-i="'+i+'" aria-label="Eliminar receta">×</button></div><div class="muted">1 porción: '+Math.round(r.k/sv)+' kcal · P'+Math.round(r.p/sv)+' G'+Math.round(r.f/sv)+' C'+Math.round(r.c/sv)+(sv>1?' (de '+sv+' porciones)':'')+'</div><button class="radd btn-ok" data-i="'+i+'" style="width:100%;margin-top:8px">+ Añadir 1 porción al día</button></div>'});
  rl.innerHTML=h;
 }
 function add(it){items.push(it);persist();render()}
@@ -396,7 +397,7 @@ window.addEventListener('DOMContentLoaded',function(){
  $('rcAdd').onclick=function(){draft.push({name:$('rcName').value||'Ingrediente',grams:0,k:parseFloat($('rcK').value)||0,p:parseFloat($('rcP').value)||0,f:parseFloat($('rcF').value)||0,c:parseFloat($('rcC').value)||0,fi:parseFloat($('rcFi').value)||0});['rcName','rcK','rcP','rcF','rcC','rcFi'].forEach(function(id){$(id).value=''});renderDraft()};
  $('draftList').onclick=function(e){var b=e.target.closest('.ddel');if(!b)return;draft.splice(parseInt(b.getAttribute('data-i'),10),1);renderDraft()};
  $('saveRecipe').onclick=function(){if(!draft.length){alert('Añade al menos un ingrediente a la receta.');return}var nm=($('rName').value||'').trim()||'Receta';var sv=parseFloat($('rServings').value)||1;if(sv<1)sv=1;var t=sumItems(draft);recipes.push({name:nm,servings:sv,k:t.k,p:t.p,f:t.f,c:t.c,fi:t.fi});saveRecipes();draft=[];$('rName').value='';$('rServings').value=1;renderDraft();renderRecipes();$('builder').style.display='none'};
- $('recipeList').onclick=function(e){var a=e.target.closest('.radd'),del=e.target.closest('.rdel');if(a){var r=recipes[parseInt(a.getAttribute('data-i'),10)],sv=r.servings||1,cont=a.closest('.rec'),pi=cont?cont.querySelector('.rport'):null,port=pi?(parseFloat(pi.value)||1):1,fac=port/sv;add({name:r.name+' ('+(port===1?'1 porción':port+' porc.')+')',grams:0,k:r.k*fac,p:r.p*fac,f:r.f*fac,c:r.c*fac,fi:r.fi*fac});return}if(del){var i=parseInt(del.getAttribute('data-i'),10);if(confirm('¿Eliminar la receta «'+recipes[i].name+'»?')){recipes.splice(i,1);saveRecipes();renderRecipes()}}};
+ $('recipeList').onclick=function(e){var a=e.target.closest('.radd'),del=e.target.closest('.rdel');if(a){var r=recipes[parseInt(a.getAttribute('data-i'),10)],sv=r.servings||1,fac=1/sv;add({name:r.name+' (1 porción)',grams:0,k:r.k*fac,p:r.p*fac,f:r.f*fac,c:r.c*fac,fi:r.fi*fac});return}if(del){var i=parseInt(del.getAttribute('data-i'),10);if(confirm('¿Eliminar la receta «'+recipes[i].name+'»?')){recipes.splice(i,1);saveRecipes();renderRecipes()}}};
  setScan('scanDayBtn','scanDay','scanDayStatus',{k:'cK',p:'cP',f:'cF',c:'cC',fi:'cFi'});
  setScan('scanRecBtn','scanRec','scanRecStatus',{k:'rcK',p:'rcP',f:'rcF',c:'rcC',fi:'rcFi'});
  catSel.onchange=fillFoods;foodSel.onchange=onFood;gIn.oninput=prev;
