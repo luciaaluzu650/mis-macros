@@ -57,6 +57,13 @@ label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--te
 .rec .nm{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px}
 h2{font-size:16px;font-weight:600;margin:0 0 10px}
+.calhead{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:11px;color:var(--text3);margin-bottom:4px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal>div{min-height:42px}
+.cald{background:transparent;border:none;border-radius:8px;min-height:42px;padding:0;font-size:14px;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.cald.has{background:var(--s2);color:var(--text);font-weight:600}
+.cald.today{box-shadow:inset 0 0 0 1.5px var(--c-prot)}
+.cald.sel{background:var(--c-prot);color:#fff}
 </style>
 </head>
 <body>
@@ -387,7 +394,11 @@ function renderRecipes(){
  rl.innerHTML=h;
 }
 function getHistory(){var days=[];for(var i=0;i<localStorage.length;i++){var key=localStorage.key(i);var mm=key&&key.match(/^macros_(\d{4})-(\d{1,2})-(\d{1,2})$/);if(!mm)continue;var arr;try{arr=JSON.parse(localStorage.getItem(key))||[]}catch(e){arr=[]}if(!arr.length)continue;days.push({y:+mm[1],mo:+mm[2],d:+mm[3],t:sumItems(arr)})}days.sort(function(a,b){return (b.y-a.y)||(b.mo-a.mo)||(b.d-a.d)});return days}
-function renderHistory(){var el=$('histList');if(!el)return;var days=getHistory();if(!days.length){el.innerHTML='<div class="muted" style="padding:8px 0">Aún no hay días registrados. Lo que añadas cada día se irá guardando aquí.</div>';return}var meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'],ds=['dom','lun','mar','mié','jue','vie','sáb'],h='',cm='';days.forEach(function(o){var mk=o.y+'-'+o.mo;if(mk!==cm){cm=mk;h+='<div style="font-weight:600;margin:16px 0 2px">'+meses[o.mo-1]+' '+o.y+'</div>'}var dow=new Date(o.y,o.mo-1,o.d).getDay();h+='<div class="li"><div class="nm">'+ds[dow]+' '+o.d+'<div class="muted" style="font-weight:400">P'+Math.round(o.t.p)+' · G'+Math.round(o.t.f)+' · C'+Math.round(o.t.c)+' · Fib '+Math.round(o.t.fi)+'</div></div><div style="text-align:right;font-weight:600">'+Math.round(o.t.k)+' <span class="muted" style="font-weight:400">kcal</span></div></div>'});el.innerHTML=h}
+var histY=null,histMo=null,histSel=null;
+var MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+function histMap(){var m={};getHistory().forEach(function(o){m[o.y+'-'+o.mo+'-'+o.d]=o.t});return m}
+function renderHistInfo(){var info=$('histInfo');if(!info)return;if(!histSel){info.innerHTML='<div class="muted">Toca un día para ver lo que comiste.</div>';return}var fecha=histSel+' de '+MESES[histMo-1]+' '+histY;var arr=[];try{arr=JSON.parse(localStorage.getItem('macros_'+histY+'-'+histMo+'-'+histSel))||[]}catch(e){}if(!arr.length){info.innerHTML='<div style="font-weight:600;margin-bottom:4px">'+fecha+'</div><div class="muted">No hay nada registrado este día.</div>';return}var t=sumItems(arr);var h='<div style="font-weight:600;margin-bottom:4px">'+fecha+'</div><div class="muted" style="margin-bottom:6px">'+Math.round(t.k)+' kcal · P'+Math.round(t.p)+' · G'+Math.round(t.f)+' · C'+Math.round(t.c)+' · Fib '+Math.round(t.fi)+'</div>';arr.forEach(function(x){h+='<div class="li"><div class="nm">'+x.name+'<div class="muted" style="font-weight:400">'+(x.grams?Math.round(x.grams)+' g · ':'')+Math.round(x.k)+' kcal · P'+Math.round(x.p)+' G'+Math.round(x.f)+' C'+Math.round(x.c)+'</div></div></div>'});info.innerHTML=h}
+function renderHistory(){var el=$('histList');if(!el)return;if(histY==null){var n=new Date();histY=n.getFullYear();histMo=n.getMonth()+1}var map=histMap();var off=(new Date(histY,histMo-1,1).getDay()+6)%7;var ndays=new Date(histY,histMo,0).getDate();var td=new Date(),tY=td.getFullYear(),tMo=td.getMonth()+1,tD=td.getDate();var h='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><button id="histPrev" style="min-height:36px;padding:6px 14px">‹</button><div style="font-weight:600">'+MESES[histMo-1]+' '+histY+'</div><button id="histNext" style="min-height:36px;padding:6px 14px">›</button></div><div class="calhead"><div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div></div><div class="cal">';for(var i=0;i<off;i++)h+='<div></div>';for(var dd=1;dd<=ndays;dd++){var has=!!map[histY+'-'+histMo+'-'+dd];var cls='cald'+(has?' has':'')+((histY===tY&&histMo===tMo&&dd===tD)?' today':'')+(histSel===dd?' sel':'');h+='<button class="'+cls+'" data-d="'+dd+'">'+dd+'</button>'}h+='</div><div id="histInfo" style="margin-top:14px"></div>';el.innerHTML=h;$('histPrev').onclick=function(){histMo--;if(histMo<1){histMo=12;histY--}histSel=null;renderHistory()};$('histNext').onclick=function(){histMo++;if(histMo>12){histMo=1;histY++}histSel=null;renderHistory()};renderHistInfo()}
 function add(it){items.push(it);persist();render()}
 function show(w){$('setup').style.display=(w==='setup')?'block':'none';$('app').style.display=(w==='app')?'block':'none'}
 function showTab(name){['macros','recetas','historial'].forEach(function(n){var el=$('tab-'+n);if(el)el.style.display=(n===name)?'block':'none'});var bs=document.querySelectorAll('.tab');for(var i=0;i<bs.length;i++){bs[i].className='tab'+(bs[i].getAttribute('data-tab')===name?' active':'')}if(name==='historial')renderHistory()}
@@ -413,6 +424,7 @@ window.addEventListener('DOMContentLoaded',function(){
  catSel.onchange=fillFoods;foodSel.onchange=onFood;gIn.oninput=prev;
  rcat.onchange=rFill;rfood.onchange=rOnFood;$('rServings').oninput=renderDraft;
  var tb=document.querySelectorAll('.tab');for(var i=0;i<tb.length;i++){(function(btn){btn.onclick=function(){showTab(btn.getAttribute('data-tab'))}})(tb[i])}
+ $('histList').onclick=function(e){var b=e.target.closest('.cald');if(!b)return;histSel=parseInt(b.getAttribute('data-d'),10);renderHistory()};
  load();fillFoods();rFill();goalSummary();renderDraft();renderRecipes();render();
  show(configured?'app':'setup');showTab('macros');
 });
