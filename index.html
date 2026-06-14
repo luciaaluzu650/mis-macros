@@ -168,6 +168,18 @@ h2{font-size:16px;font-weight:600;margin:0 0 10px}
           </details>
         </div>
         <div class="card">
+          <h2>Comer fuera</h2>
+          <p class="muted" style="margin:0 0 10px">Para comidas sin etiqueta (oficina, restaurante). Pon al menos las calorías; lo demás, si lo sabes.</p>
+          <input id="qName" type="text" placeholder="Nombre (ej. Menú del día)" style="margin-bottom:8px">
+          <div class="mgrid">
+            <input id="qK" type="number" inputmode="numeric" placeholder="kcal *">
+            <input id="qP" type="number" inputmode="numeric" placeholder="Prot g">
+            <input id="qF" type="number" inputmode="numeric" placeholder="Grasa g">
+            <input id="qC" type="number" inputmode="numeric" placeholder="Carb g">
+          </div>
+          <button class="btn-primary" id="qAdd" style="margin-top:10px;width:100%">+ Añadir al día</button>
+        </div>
+        <div class="card">
           <h2>Añadir desde recetas</h2>
           <div id="addFilters" class="fchips" style="margin-bottom:10px"></div>
           <div id="recipeAddList"></div>
@@ -467,6 +479,7 @@ window.addEventListener('DOMContentLoaded',function(){
  $('recalcBtn').onclick=function(){var p=readProfile('a');if(!validP(p)){alert('Rellena tu peso actual, objetivo, altura, edad y actividad.');return}saveProfile(p);GOALS=calcGoals(p);saveG();fillProfile('s',p);goalSummary();render();alert('Objetivos actualizados ✓\n'+GOALS.k+' kcal · '+GOALS.p+' P · '+GOALS.f+' G · '+GOALS.c+' C · '+GOALS.fi+' fibra')};
  $('addBtn').onclick=function(){var fd=curOf(catSel,foodSel),g=parseFloat(gIn.value)||0;if(!fd||g<=0)return;var r=g/100;add({name:fd.n,grams:g,k:fd.k*r,p:fd.p*r,f:fd.f*r,c:fd.c*r,fi:fd.fi*r})};
  $('addCust').onclick=function(){add({name:$('cName').value||'Alimento',grams:0,k:parseFloat($('cK').value)||0,p:parseFloat($('cP').value)||0,f:parseFloat($('cF').value)||0,c:parseFloat($('cC').value)||0,fi:parseFloat($('cFi').value)||0});['cName','cK','cP','cF','cC','cFi'].forEach(function(id){$(id).value=''})};
+ $('qAdd').onclick=function(){var k=parseFloat($('qK').value)||0;if(k<=0){alert('Pon al menos las calorías estimadas.');return}add({name:($('qName').value||'').trim()||'Comida fuera',grams:0,k:k,p:parseFloat($('qP').value)||0,f:parseFloat($('qF').value)||0,c:parseFloat($('qC').value)||0,fi:0});['qName','qK','qP','qF','qC'].forEach(function(id){$(id).value=''});var b=$('qAdd');b.textContent='✓ Añadido';setTimeout(function(){b.textContent='+ Añadir al día'},900)};
  $('log').onclick=function(e){var b=e.target.closest('.delbtn');if(!b)return;items.splice(parseInt(b.getAttribute('data-i'),10),1);persist();render()};
  $('clearBtn').onclick=function(){if(confirm('¿Vaciar todo lo de hoy?')){items=[];persist();render()}};
  $('newRecipeBtn').onclick=function(){var b=$('builder');b.style.display=(b.style.display==='none')?'block':'none'};
