@@ -26,7 +26,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:12px}
 .tabbar{position:sticky;top:0;background:var(--bg);padding:8px 0 8px;z-index:10}
 .tabs{display:flex;gap:6px;background:var(--s2);padding:4px;border-radius:10px}
-.tab{flex:1;background:transparent;border:none;border-radius:8px;padding:9px;min-height:40px;font-weight:500;color:var(--text2);cursor:pointer}
+.tab{flex:1;background:transparent;border:none;border-radius:8px;padding:9px 4px;min-height:40px;font-weight:500;font-size:14px;white-space:nowrap;color:var(--text2);cursor:pointer}
 .tab.active{background:var(--surface);color:var(--text)}
 .track{background:var(--s3);border-radius:999px;height:8px;overflow:hidden;margin-top:6px}
 .fill{height:100%;border-radius:999px;transition:width .3s}
@@ -85,6 +85,7 @@ h2{font-size:16px;font-weight:600;margin:0 0 10px}
     <div class="tabbar"><div class="tabs">
       <button class="tab active" data-tab="macros" type="button">Mis macros</button>
       <button class="tab" data-tab="recetas" type="button">Recetas</button>
+      <button class="tab" data-tab="historial" type="button">Historial</button>
     </div></div>
 
     <div id="tab-macros">
@@ -200,6 +201,13 @@ h2{font-size:16px;font-weight:600;margin:0 0 10px}
         </div>
       </div>
       <p class="muted" style="text-align:center">Crea tus comidas fijas una vez y añádelas al día con un toque.</p>
+    </div>
+
+    <div id="tab-historial" style="display:none">
+      <div class="card">
+        <h2>Historial</h2>
+        <div id="histList"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -378,9 +386,11 @@ function renderRecipes(){
  var h='';recipes.forEach(function(r,i){var sv=r.servings||1;h+='<div class="rec"><div style="display:flex;align-items:center;gap:8px"><div class="nm" style="flex:1">'+r.name+'</div><button class="rdel delbtn" data-i="'+i+'" aria-label="Eliminar receta">×</button></div><div class="muted">1 porción: '+Math.round(r.k/sv)+' kcal · P'+Math.round(r.p/sv)+' G'+Math.round(r.f/sv)+' C'+Math.round(r.c/sv)+(sv>1?' (de '+sv+' porciones)':'')+'</div><button class="radd btn-ok" data-i="'+i+'" style="width:100%;margin-top:8px">+ Añadir 1 porción al día</button></div>'});
  rl.innerHTML=h;
 }
+function getHistory(){var days=[];for(var i=0;i<localStorage.length;i++){var key=localStorage.key(i);var mm=key&&key.match(/^macros_(\d{4})-(\d{1,2})-(\d{1,2})$/);if(!mm)continue;var arr;try{arr=JSON.parse(localStorage.getItem(key))||[]}catch(e){arr=[]}if(!arr.length)continue;days.push({y:+mm[1],mo:+mm[2],d:+mm[3],t:sumItems(arr)})}days.sort(function(a,b){return (b.y-a.y)||(b.mo-a.mo)||(b.d-a.d)});return days}
+function renderHistory(){var el=$('histList');if(!el)return;var days=getHistory();if(!days.length){el.innerHTML='<div class="muted" style="padding:8px 0">Aún no hay días registrados. Lo que añadas cada día se irá guardando aquí.</div>';return}var meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'],ds=['dom','lun','mar','mié','jue','vie','sáb'],h='',cm='';days.forEach(function(o){var mk=o.y+'-'+o.mo;if(mk!==cm){cm=mk;h+='<div style="font-weight:600;margin:16px 0 2px">'+meses[o.mo-1]+' '+o.y+'</div>'}var dow=new Date(o.y,o.mo-1,o.d).getDay();h+='<div class="li"><div class="nm">'+ds[dow]+' '+o.d+'<div class="muted" style="font-weight:400">P'+Math.round(o.t.p)+' · G'+Math.round(o.t.f)+' · C'+Math.round(o.t.c)+' · Fib '+Math.round(o.t.fi)+'</div></div><div style="text-align:right;font-weight:600">'+Math.round(o.t.k)+' <span class="muted" style="font-weight:400">kcal</span></div></div>'});el.innerHTML=h}
 function add(it){items.push(it);persist();render()}
 function show(w){$('setup').style.display=(w==='setup')?'block':'none';$('app').style.display=(w==='app')?'block':'none'}
-function showTab(name){$('tab-macros').style.display=(name==='macros')?'block':'none';$('tab-recetas').style.display=(name==='recetas')?'block':'none';var bs=document.querySelectorAll('.tab');for(var i=0;i<bs.length;i++){bs[i].className='tab'+(bs[i].getAttribute('data-tab')===name?' active':'')}}
+function showTab(name){['macros','recetas','historial'].forEach(function(n){var el=$('tab-'+n);if(el)el.style.display=(n===name)?'block':'none'});var bs=document.querySelectorAll('.tab');for(var i=0;i<bs.length;i++){bs[i].className='tab'+(bs[i].getAttribute('data-tab')===name?' active':'')}if(name==='historial')renderHistory()}
 window.addEventListener('DOMContentLoaded',function(){
  catSel=$('catSel');foodSel=$('foodSel');gIn=$('gIn');rcat=$('rcat');rfood=$('rfood');rg=$('rg');
  Object.keys(FOODS).forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;catSel.appendChild(o);var o2=document.createElement('option');o2.value=c;o2.textContent=c;rcat.appendChild(o2)});
