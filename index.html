@@ -42,6 +42,7 @@ button{background:var(--s2);border:.5px solid var(--border);border-radius:8px;pa
 button:active{transform:scale(.98)}
 .btn-primary{background:var(--c-prot);color:#fff;border-color:transparent}
 .btn-ok{background:var(--c-ok);color:#fff;border-color:transparent}
+.btn-scan{background:var(--s2);border:.5px solid var(--c-prot);color:var(--c-prot)}
 summary{cursor:pointer;font-size:14px;color:var(--text2);font-weight:500}
 .muted{color:var(--text3);font-size:12px}
 .delbtn{background:none;border:none;font-size:22px;color:var(--text3);padding:0 6px;min-height:auto;line-height:1}
@@ -49,6 +50,7 @@ label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--te
 .wbox{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .li{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:.5px solid var(--border)}
 .li .nm{flex:1;min-width:0;font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px}
 </style>
 </head>
 <body>
@@ -99,8 +101,13 @@ label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--te
           <button id="rAdd">+ ingr.</button>
         </div>
         <details style="margin-top:10px">
-          <summary>Ingrediente manual</summary>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-top:8px">
+          <summary>Ingrediente manual / escanear etiqueta</summary>
+          <div class="row" style="margin:8px 0 10px">
+            <input id="scanRec" type="file" accept="image/*" capture="environment" style="display:none">
+            <button id="scanRecBtn" type="button" class="btn-scan">📷 Escanear etiqueta</button>
+            <span id="scanRecStatus" class="muted"></span>
+          </div>
+          <div class="mgrid">
             <input id="rcName" type="text" placeholder="Nombre" style="grid-column:1/-1">
             <input id="rcK" type="number" placeholder="kcal">
             <input id="rcP" type="number" placeholder="Prot g">
@@ -129,9 +136,14 @@ label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--te
       </div>
       <div id="prev" class="muted" style="margin-top:8px"></div>
       <details style="margin-top:14px">
-        <summary>Alimento manual (etiqueta o foto)</summary>
-        <p class="muted" style="margin:8px 0 10px">Copia los valores de la etiqueta. Para leer una foto, házsela a Claude en su app, te da los macros y los metes aquí.</p>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px">
+        <summary>Alimento manual / escanear etiqueta</summary>
+        <p class="muted" style="margin:8px 0 10px">Escanea la etiqueta con la cámara y revisa los valores (las etiquetas suelen venir por 100 g, ajústalos a tu ración). O cópialos a mano.</p>
+        <div class="row" style="margin-bottom:10px">
+          <input id="scanDay" type="file" accept="image/*" capture="environment" style="display:none">
+          <button id="scanDayBtn" type="button" class="btn-scan">📷 Escanear etiqueta</button>
+          <span id="scanDayStatus" class="muted"></span>
+        </div>
+        <div class="mgrid">
           <input id="cName" type="text" placeholder="Nombre" style="grid-column:1/-1">
           <input id="cK" type="number" placeholder="kcal">
           <input id="cP" type="number" placeholder="Prot g">
@@ -276,6 +288,35 @@ function validP(p){return p.wNow>0&&p.wGoal>0&&p.h>0&&p.age>0&&p.act>0}
 function fillProfile(px,p){if(!p)return;if(p.wNow)$(px+'wNow').value=p.wNow;if(p.wGoal)$(px+'wGoal').value=p.wGoal;if(p.h)$(px+'h').value=p.h;if(p.age)$(px+'age').value=p.age;if(p.sex)$(px+'sex').value=p.sex;if(p.act)$(px+'act').value=p.act}
 function goalSummary(){var el=$('goalSummary');if(el)el.textContent='Ahora: '+Math.round(GOALS.k)+' kcal · '+Math.round(GOALS.p)+' g prot · '+Math.round(GOALS.f)+' g grasa · '+Math.round(GOALS.c)+' g carb · '+Math.round(GOALS.fi)+' g fibra'}
 function sumItems(arr){var t={k:0,p:0,f:0,c:0,fi:0};arr.forEach(function(x){t.k+=x.k;t.p+=x.p;t.f+=x.f;t.c+=x.c;t.fi+=x.fi});return t}
+var tessLoading=null;
+function ensureTesseract(){
+ if(typeof Tesseract!=='undefined')return Promise.resolve();
+ if(tessLoading)return tessLoading;
+ tessLoading=new Promise(function(res,rej){var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';s.onload=res;s.onerror=rej;document.head.appendChild(s)});
+ return tessLoading;
+}
+function parseLabel(text){
+ var t=(text||'').replace(/ /g,' ');
+ function g(re){var m=t.match(re);return m?parseFloat(m[1].replace(',','.')):null}
+ return {
+  k:g(/(\d+[.,]?\d*)\s*kcal/i),
+  p:g(/prote[ií]na[s]?[^\d\n]{0,10}(\d+[.,]?\d*)/i),
+  c:g(/hidratos[^\d\n]{0,16}(\d+[.,]?\d*)/i)||g(/carbohidrato[s]?[^\d\n]{0,10}(\d+[.,]?\d*)/i),
+  f:g(/grasa[s]?[^\d\n]{0,10}(\d+[.,]?\d*)/i),
+  fi:g(/fibra[^\d\n]{0,14}(\d+[.,]?\d*)/i)
+ };
+}
+function setScan(btnId,inputId,statusId,f){
+ var input=$(inputId),status=$(statusId);
+ $(btnId).onclick=function(){input.click()};
+ input.onchange=function(){
+  var file=input.files&&input.files[0];if(!file)return;
+  status.textContent='Cargando lector…';
+  ensureTesseract().then(function(){status.textContent='Leyendo etiqueta…';return Tesseract.recognize(file,'spa',{logger:function(m){if(m.status==='recognizing text')status.textContent='Leyendo… '+Math.round(m.progress*100)+'%'}})})
+  .then(function(r){var v=parseLabel(r.data.text),n=0;['k','p','f','c','fi'].forEach(function(key){if(v[key]!=null&&f[key]){$(f[key]).value=v[key];n++}});status.textContent=n?('Detectado '+n+'/5 · revisa los valores'):'No se detectaron valores, ponlos a mano';input.value=''})
+  .catch(function(){status.textContent='No se pudo leer (¿sin conexión la 1ª vez?). Ponlos a mano.';input.value=''});
+ };
+}
 var catSel,foodSel,gIn,rcat,rfood,rg;
 function fillSel(catEl,foodEl){foodEl.innerHTML='';FOODS[catEl.value].forEach(function(fd,i){var o=document.createElement('option');o.value=i;o.textContent=fd.n;foodEl.appendChild(o)})}
 function curOf(catEl,foodEl){return FOODS[catEl.value][parseInt(foodEl.value,10)||0]}
@@ -334,6 +375,8 @@ window.addEventListener('DOMContentLoaded',function(){
  $('draftList').onclick=function(e){var b=e.target.closest('.ddel');if(!b)return;draft.splice(parseInt(b.getAttribute('data-i'),10),1);renderDraft()};
  $('saveRecipe').onclick=function(){if(!draft.length){alert('Añade al menos un ingrediente a la receta.');return}var nm=($('rName').value||'').trim()||'Receta';var t=sumItems(draft);recipes.push({name:nm,k:t.k,p:t.p,f:t.f,c:t.c,fi:t.fi});saveRecipes();draft=[];$('rName').value='';renderDraft();renderRecipes();$('builder').style.display='none'};
  $('recipeList').onclick=function(e){var a=e.target.closest('.radd'),del=e.target.closest('.rdel');if(a){var r=recipes[parseInt(a.getAttribute('data-i'),10)];add({name:r.name,grams:0,k:r.k,p:r.p,f:r.f,c:r.c,fi:r.fi});return}if(del){var i=parseInt(del.getAttribute('data-i'),10);if(confirm('¿Eliminar la receta «'+recipes[i].name+'»?')){recipes.splice(i,1);saveRecipes();renderRecipes()}}};
+ setScan('scanDayBtn','scanDay','scanDayStatus',{k:'cK',p:'cP',f:'cF',c:'cC',fi:'cFi'});
+ setScan('scanRecBtn','scanRec','scanRecStatus',{k:'rcK',p:'rcP',f:'rcF',c:'rcC',fi:'rcFi'});
  catSel.onchange=fillFoods;foodSel.onchange=onFood;gIn.oninput=prev;
  rcat.onchange=rFill;rfood.onchange=rOnFood;
  load();fillFoods();rFill();goalSummary();renderDraft();renderRecipes();render();
