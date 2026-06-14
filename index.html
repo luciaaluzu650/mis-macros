@@ -37,6 +37,9 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .fchips{display:flex;gap:6px;flex-wrap:wrap}
 .fchip{background:var(--s2);border:.5px solid var(--border);border-radius:999px;padding:6px 12px;min-height:auto;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer}
 .fchip.on{background:var(--c-prot);color:#fff;border-color:transparent}
+.subbar{display:flex;gap:6px;background:var(--s2);padding:4px;border-radius:10px;margin-bottom:14px}
+.subtab{flex:1;background:transparent;border:none;border-radius:8px;padding:9px;min-height:40px;font-weight:500;font-size:14px;color:var(--text2);cursor:pointer}
+.subtab.on{background:var(--surface);color:var(--text)}
 .track{background:var(--s3);border-radius:999px;height:8px;overflow:hidden;margin-top:6px}
 .fill{height:100%;border-radius:999px;transition:width .3s}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
@@ -112,48 +115,63 @@ h2{font-size:16px;font-weight:600;margin:0 0 10px}
     </nav>
 
     <div id="tab-macros">
-      <div class="card" style="text-align:center">
-        <div class="mlab">Calorías restantes</div>
-        <div class="knum" id="kNum">0</div>
-        <div class="msub" id="kSub" style="color:var(--text2)"></div>
-        <div class="track"><div class="fill" id="kBar" style="width:0%;background:var(--c-kcal)"></div></div>
+      <div class="subbar">
+        <button class="subtab on" data-sub="resumen" type="button">Resumen</button>
+        <button class="subtab" data-sub="add" type="button">Añadir</button>
       </div>
-      <div class="grid" id="grid"></div>
-      <div class="card">
-        <h2>Añadir alimento</h2>
-        <div class="row">
-          <select id="catSel" aria-label="Categoría"></select>
-          <select id="foodSel" aria-label="Alimento"></select>
-          <input id="gIn" type="number" min="0" step="1" value="100" style="width:66px;flex:none" aria-label="Gramos">
-          <span class="muted">g</span>
-          <button class="btn-primary" id="addBtn">+ Añadir</button>
+
+      <div id="sub-resumen">
+        <div class="card" style="text-align:center">
+          <div class="mlab">Calorías restantes</div>
+          <div class="knum" id="kNum">0</div>
+          <div class="msub" id="kSub" style="color:var(--text2)"></div>
+          <div class="track"><div class="fill" id="kBar" style="width:0%;background:var(--c-kcal)"></div></div>
         </div>
-        <div id="prev" class="muted" style="margin-top:8px"></div>
-        <details style="margin-top:14px">
-          <summary>Alimento manual / escanear etiqueta</summary>
-          <p class="muted" style="margin:8px 0 10px">Escanea la etiqueta con la cámara y revisa los valores (las etiquetas suelen venir por 100 g, ajústalos a tu ración). O cópialos a mano.</p>
-          <div class="row" style="margin-bottom:10px">
-            <input id="scanDay" type="file" accept="image/*" capture="environment" style="display:none">
-            <button id="scanDayBtn" type="button" class="btn-scan">📷 Escanear etiqueta</button>
-            <span id="scanDayStatus" class="muted"></span>
+        <div class="grid" id="grid"></div>
+        <div class="card">
+          <div class="row" style="justify-content:space-between">
+            <h2 style="margin:0">Hoy</h2>
+            <button id="clearBtn" style="font-size:13px;padding:6px 12px;min-height:auto">Vaciar día</button>
           </div>
-          <div class="mgrid">
-            <input id="cName" type="text" placeholder="Nombre" style="grid-column:1/-1">
-            <input id="cK" type="number" placeholder="kcal">
-            <input id="cP" type="number" placeholder="Prot g">
-            <input id="cF" type="number" placeholder="Grasa g">
-            <input id="cC" type="number" placeholder="Carb g">
-            <input id="cFi" type="number" placeholder="Fibra g">
-          </div>
-          <button id="addCust" style="margin-top:8px;width:100%">+ Añadir manual</button>
-        </details>
+          <div id="log" style="margin-top:8px"></div>
+        </div>
       </div>
-      <div class="card">
-        <div class="row" style="justify-content:space-between">
-          <h2 style="margin:0">Hoy</h2>
-          <button id="clearBtn" style="font-size:13px;padding:6px 12px;min-height:auto">Vaciar día</button>
+
+      <div id="sub-add" style="display:none">
+        <div class="card">
+          <h2>Añadir alimento</h2>
+          <div class="row">
+            <select id="catSel" aria-label="Categoría"></select>
+            <select id="foodSel" aria-label="Alimento"></select>
+            <input id="gIn" type="number" min="0" step="1" value="100" style="width:66px;flex:none" aria-label="Gramos">
+            <span class="muted">g</span>
+            <button class="btn-primary" id="addBtn">+ Añadir</button>
+          </div>
+          <div id="prev" class="muted" style="margin-top:8px"></div>
+          <details style="margin-top:14px">
+            <summary>Alimento manual / escanear etiqueta</summary>
+            <p class="muted" style="margin:8px 0 10px">Escanea la etiqueta con la cámara y revisa los valores (las etiquetas suelen venir por 100 g, ajústalos a tu ración). O cópialos a mano.</p>
+            <div class="row" style="margin-bottom:10px">
+              <input id="scanDay" type="file" accept="image/*" capture="environment" style="display:none">
+              <button id="scanDayBtn" type="button" class="btn-scan">📷 Escanear etiqueta</button>
+              <span id="scanDayStatus" class="muted"></span>
+            </div>
+            <div class="mgrid">
+              <input id="cName" type="text" placeholder="Nombre" style="grid-column:1/-1">
+              <input id="cK" type="number" placeholder="kcal">
+              <input id="cP" type="number" placeholder="Prot g">
+              <input id="cF" type="number" placeholder="Grasa g">
+              <input id="cC" type="number" placeholder="Carb g">
+              <input id="cFi" type="number" placeholder="Fibra g">
+            </div>
+            <button id="addCust" style="margin-top:8px;width:100%">+ Añadir manual</button>
+          </details>
         </div>
-        <div id="log" style="margin-top:8px"></div>
+        <div class="card">
+          <h2>Añadir desde recetas</h2>
+          <div id="addFilters" class="fchips" style="margin-bottom:10px"></div>
+          <div id="recipeAddList"></div>
+        </div>
       </div>
     </div>
 
@@ -414,7 +432,12 @@ function renderDraft(){
 var recipeFilter='all';
 var RTYPES=[['all','Todas'],['desayuno','Desayuno'],['comida','Comida'],['cena','Cena'],['snack','Snack']];
 function typeLabel(tp){for(var i=0;i<RTYPES.length;i++)if(RTYPES[i][0]===tp)return RTYPES[i][1];return ''}
-function renderFilters(){var el=$('recipeFilters');if(!el)return;var h='';RTYPES.forEach(function(t){h+='<button class="fchip'+(recipeFilter===t[0]?' on':'')+'" data-f="'+t[0]+'">'+t[1]+'</button>'});el.innerHTML=h}
+function chipsHTML(cur){var h='';RTYPES.forEach(function(t){h+='<button class="fchip'+(cur===t[0]?' on':'')+'" data-f="'+t[0]+'">'+t[1]+'</button>'});return h}
+function renderFilters(){var el=$('recipeFilters');if(el)el.innerHTML=chipsHTML(recipeFilter)}
+var addFilter='all';
+function renderAddRecipes(){var fl=$('addFilters');if(fl)fl.innerHTML=chipsHTML(addFilter);var rl=$('recipeAddList');if(!rl)return;if(!recipes.length){rl.innerHTML='<div class="muted" style="padding:6px 0">No tienes recetas guardadas. Créalas en el menú ☰ → Recetas.</div>';return}var h='',shown=0;recipes.forEach(function(r,i){if(addFilter!=='all'&&(r.type||'')!==addFilter)return;shown++;var sv=r.servings||1,tl=typeLabel(r.type);h+='<div class="rec"><div style="display:flex;align-items:center;gap:8px"><div class="nm" style="flex:1">'+r.name+(tl?' · <span class="muted">'+tl+'</span>':'')+'</div></div><div class="muted">1 porción: '+Math.round(r.k/sv)+' kcal · P'+Math.round(r.p/sv)+' G'+Math.round(r.f/sv)+' C'+Math.round(r.c/sv)+'</div><button class="radd2 btn-ok" data-i="'+i+'" style="width:100%;margin-top:8px">+ Añadir 1 porción al día</button></div>'});if(!shown)h='<div class="muted" style="padding:6px 0">No tienes recetas de «'+typeLabel(addFilter)+'».</div>';rl.innerHTML=h}
+function setAddFilter(t){addFilter=t;renderAddRecipes()}
+function showSub(name){$('sub-resumen').style.display=(name==='resumen')?'block':'none';$('sub-add').style.display=(name==='add')?'block':'none';var ss=document.querySelectorAll('.subtab');for(var i=0;i<ss.length;i++){ss[i].className='subtab'+(ss[i].getAttribute('data-sub')===name?' on':'')}if(name==='add')renderAddRecipes()}
 function setRFilter(t){recipeFilter=t;renderRecipes()}
 function renderRecipes(){
  var rl=$('recipeList');if(!rl)return;renderFilters();
@@ -451,8 +474,8 @@ window.addEventListener('DOMContentLoaded',function(){
  $('rAdd').onclick=function(){var fd=curOf(rcat,rfood),g=parseFloat(rg.value)||0;if(!fd||g<=0)return;var r=g/100;draft.push({name:fd.n,grams:g,k:fd.k*r,p:fd.p*r,f:fd.f*r,c:fd.c*r,fi:fd.fi*r});renderDraft()};
  $('rcAdd').onclick=function(){draft.push({name:$('rcName').value||'Ingrediente',grams:0,k:parseFloat($('rcK').value)||0,p:parseFloat($('rcP').value)||0,f:parseFloat($('rcF').value)||0,c:parseFloat($('rcC').value)||0,fi:parseFloat($('rcFi').value)||0});['rcName','rcK','rcP','rcF','rcC','rcFi'].forEach(function(id){$(id).value=''});renderDraft()};
  $('draftList').onclick=function(e){var b=e.target.closest('.ddel');if(!b)return;draft.splice(parseInt(b.getAttribute('data-i'),10),1);renderDraft()};
- $('saveRecipe').onclick=function(){if(!draft.length){alert('Añade al menos un ingrediente a la receta.');return}var nm=($('rName').value||'').trim()||'Receta';var sv=parseFloat($('rServings').value)||1;if(sv<1)sv=1;var t=sumItems(draft);recipes.push({name:nm,type:$('rType').value,servings:sv,k:t.k,p:t.p,f:t.f,c:t.c,fi:t.fi});saveRecipes();draft=[];$('rName').value='';$('rServings').value=1;renderDraft();renderRecipes();$('builder').style.display='none'};
- $('recipeList').onclick=function(e){var a=e.target.closest('.radd'),del=e.target.closest('.rdel');if(a){var r=recipes[parseInt(a.getAttribute('data-i'),10)],sv=r.servings||1,fac=1/sv;add({name:r.name+' (1 porción)',grams:0,k:r.k*fac,p:r.p*fac,f:r.f*fac,c:r.c*fac,fi:r.fi*fac});return}if(del){var i=parseInt(del.getAttribute('data-i'),10);if(confirm('¿Eliminar la receta «'+recipes[i].name+'»?')){recipes.splice(i,1);saveRecipes();renderRecipes()}}};
+ $('saveRecipe').onclick=function(){if(!draft.length){alert('Añade al menos un ingrediente a la receta.');return}var nm=($('rName').value||'').trim()||'Receta';var sv=parseFloat($('rServings').value)||1;if(sv<1)sv=1;var t=sumItems(draft);recipes.push({name:nm,type:$('rType').value,servings:sv,k:t.k,p:t.p,f:t.f,c:t.c,fi:t.fi});saveRecipes();draft=[];$('rName').value='';$('rServings').value=1;renderDraft();renderRecipes();renderAddRecipes();$('builder').style.display='none'};
+ $('recipeList').onclick=function(e){var a=e.target.closest('.radd'),del=e.target.closest('.rdel');if(a){var r=recipes[parseInt(a.getAttribute('data-i'),10)],sv=r.servings||1,fac=1/sv;add({name:r.name+' (1 porción)',grams:0,k:r.k*fac,p:r.p*fac,f:r.f*fac,c:r.c*fac,fi:r.fi*fac});return}if(del){var i=parseInt(del.getAttribute('data-i'),10);if(confirm('¿Eliminar la receta «'+recipes[i].name+'»?')){recipes.splice(i,1);saveRecipes();renderRecipes();renderAddRecipes()}}};
  $('recipeFilters').onclick=function(e){var b=e.target.closest('.fchip');if(!b)return;setRFilter(b.getAttribute('data-f'))};
  setScan('scanDayBtn','scanDay','scanDayStatus',{k:'cK',p:'cP',f:'cF',c:'cC',fi:'cFi'});
  setScan('scanRecBtn','scanRec','scanRecStatus',{k:'rcK',p:'rcP',f:'rcF',c:'rcC',fi:'rcFi'});
@@ -460,8 +483,11 @@ window.addEventListener('DOMContentLoaded',function(){
  rcat.onchange=rFill;rfood.onchange=rOnFood;$('rServings').oninput=renderDraft;
  var ni=document.querySelectorAll('.navitem');for(var i=0;i<ni.length;i++){(function(btn){btn.onclick=function(){showSection(btn.getAttribute('data-sec'))}})(ni[i])}
  $('menuBtn').onclick=openDrawer;$('overlay').onclick=closeDrawer;
+ var st=document.querySelectorAll('.subtab');for(var si=0;si<st.length;si++){(function(btn){btn.onclick=function(){showSub(btn.getAttribute('data-sub'))}})(st[si])}
+ $('addFilters').onclick=function(e){var b=e.target.closest('.fchip');if(!b)return;setAddFilter(b.getAttribute('data-f'))};
+ $('recipeAddList').onclick=function(e){var a=e.target.closest('.radd2');if(!a)return;var r=recipes[parseInt(a.getAttribute('data-i'),10)],sv=r.servings||1,fac=1/sv;add({name:r.name+' (1 porción)',grams:0,k:r.k*fac,p:r.p*fac,f:r.f*fac,c:r.c*fac,fi:r.fi*fac});a.textContent='✓ Añadido';setTimeout(renderAddRecipes,900)};
  $('histList').onclick=function(e){var b=e.target.closest('.cald');if(!b)return;histSel=parseInt(b.getAttribute('data-d'),10);renderHistory()};
- load();fillFoods();rFill();goalSummary();renderDraft();renderRecipes();render();
+ load();fillFoods();rFill();goalSummary();renderDraft();renderRecipes();renderAddRecipes();render();
  show(configured?'app':'setup');showSection('macros');
 });
 })();
