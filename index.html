@@ -58,11 +58,18 @@ label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--te
 .li .nm{flex:1;min-width:0;font-size:14px;font-weight:500}
 .mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px}
 h2{font-size:16px;font-weight:600;margin:0 0 10px}
+.calhead{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:11px;color:var(--text3);margin-bottom:4px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal>div{min-height:42px}
+.cald{background:transparent;border:none;border-radius:8px;min-height:42px;padding:0;font-size:14px;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.cald.has{background:var(--s2);color:var(--text);font-weight:600}
+.cald.today{box-shadow:inset 0 0 0 1.5px var(--c-prot)}
+.cald.sel{background:var(--c-prot);color:#fff}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="topbar"><span class="t">🍎 Mi plan</span><button id="goalsBtn" type="button" aria-label="Objetivos">⚙</button></div>
+  <div class="topbar"><span class="t">🍎 Mi plan</span><span><button id="histBtn" type="button" aria-label="Historial">📅</button><button id="goalsBtn" type="button" aria-label="Objetivos">⚙</button></span></div>
 
   <div id="setup" class="card" style="display:none">
     <div style="font-size:17px;font-weight:600;margin-bottom:4px">¡Hola! Calcula tus objetivos</div>
@@ -141,6 +148,14 @@ h2{font-size:16px;font-weight:600;margin:0 0 10px}
     </div>
     <p class="muted" style="text-align:center">Tus datos se guardan solo en este dispositivo.</p>
   </div>
+
+  <div id="histView" style="display:none">
+    <div class="card">
+      <h2>Historial</h2>
+      <div id="histList"></div>
+    </div>
+    <button id="histBack" style="width:100%">Volver</button>
+  </div>
 </div>
 <script>
 (function(){
@@ -217,13 +232,22 @@ function renderMeal(){
  el.innerHTML=h;
  opts.forEach(function(o,i){updMac(i)});
 }
-function show(v){$('setup').style.display=(v==='setup')?'block':'none';$('app').style.display=(v==='app')?'block':'none';$('goalsView').style.display=(v==='goals')?'block':'none'}
+var histY=null,histMo=null,histSel=null;
+var MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+function getHistory(){var days=[];for(var i=0;i<localStorage.length;i++){var key=localStorage.key(i);var mm=key&&key.match(/^macros_(\d{4})-(\d{1,2})-(\d{1,2})$/);if(!mm)continue;var arr;try{arr=JSON.parse(localStorage.getItem(key))||[]}catch(e){arr=[]}if(!arr.length)continue;days.push({y:+mm[1],mo:+mm[2],d:+mm[3],t:sumItems(arr)})}return days}
+function histMap(){var m={};getHistory().forEach(function(o){m[o.y+'-'+o.mo+'-'+o.d]=o.t});return m}
+function renderHistInfo(){var info=$('histInfo');if(!info)return;if(!histSel){info.innerHTML='<div class="muted">Toca un día para ver lo que comiste.</div>';return}var fecha=histSel+' de '+MESES[histMo-1]+' '+histY,arr=[];try{arr=JSON.parse(localStorage.getItem('macros_'+histY+'-'+histMo+'-'+histSel))||[]}catch(e){}if(!arr.length){info.innerHTML='<div style="font-weight:600;margin-bottom:4px">'+fecha+'</div><div class="muted">No hay nada registrado este día.</div>';return}var t=sumItems(arr),h='<div style="font-weight:600;margin-bottom:4px">'+fecha+'</div><div class="muted" style="margin-bottom:6px">'+Math.round(t.k)+' kcal · P'+Math.round(t.p)+' · G'+Math.round(t.f)+' · C'+Math.round(t.c)+' · Fib '+Math.round(t.fi)+'</div>';arr.forEach(function(x){h+='<div class="li"><div class="nm">'+x.name+'<div class="muted" style="font-weight:400">'+Math.round(x.k)+' kcal · P'+Math.round(x.p)+' G'+Math.round(x.f)+' C'+Math.round(x.c)+'</div></div></div>'});info.innerHTML=h}
+function renderHistory(){var el=$('histList');if(!el)return;if(histY==null){var n=new Date();histY=n.getFullYear();histMo=n.getMonth()+1}var map=histMap(),off=(new Date(histY,histMo-1,1).getDay()+6)%7,ndays=new Date(histY,histMo,0).getDate(),td=new Date(),tY=td.getFullYear(),tMo=td.getMonth()+1,tD=td.getDate();var h='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><button id="histPrev" style="min-height:36px;padding:6px 14px">‹</button><div style="font-weight:600">'+MESES[histMo-1]+' '+histY+'</div><button id="histNext" style="min-height:36px;padding:6px 14px">›</button></div><div class="calhead"><div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div></div><div class="cal">';for(var i=0;i<off;i++)h+='<div></div>';for(var dd=1;dd<=ndays;dd++){var has=!!map[histY+'-'+histMo+'-'+dd],cls='cald'+(has?' has':'')+((histY===tY&&histMo===tMo&&dd===tD)?' today':'')+(histSel===dd?' sel':'');h+='<button class="'+cls+'" data-d="'+dd+'">'+dd+'</button>'}h+='</div><div id="histInfo" style="margin-top:14px"></div>';el.innerHTML=h;$('histPrev').onclick=function(){histMo--;if(histMo<1){histMo=12;histY--}histSel=null;renderHistory()};$('histNext').onclick=function(){histMo++;if(histMo>12){histMo=1;histY++}histSel=null;renderHistory()};renderHistInfo()}
+function show(v){$('setup').style.display=(v==='setup')?'block':'none';$('app').style.display=(v==='app')?'block':'none';$('goalsView').style.display=(v==='goals')?'block':'none';$('histView').style.display=(v==='hist')?'block':'none'}
 window.addEventListener('DOMContentLoaded',function(){
  var prof=loadProfile();if(prof){fillProfile('s',prof);fillProfile('a',prof)}
  $('startBtn').onclick=function(){var p=readProfile('s');if(!validP(p)){alert('Rellena peso, objetivo, altura, edad y actividad.');return}saveProfile(p);GOALS=calcGoals(p);saveG();configured=true;fillProfile('a',p);goalSummary();render();show('app');window.scrollTo(0,0)};
  $('recalcBtn').onclick=function(){var p=readProfile('a');if(!validP(p)){alert('Rellena peso, objetivo, altura, edad y actividad.');return}saveProfile(p);GOALS=calcGoals(p);saveG();fillProfile('s',p);goalSummary();render();alert('Objetivos actualizados ✓\n'+GOALS.k+' kcal · '+GOALS.p+' P · '+GOALS.f+' G · '+GOALS.c+' C')};
  $('goalsBtn').onclick=function(){goalSummary();show('goals');window.scrollTo(0,0)};
  $('backBtn').onclick=function(){show('app');window.scrollTo(0,0)};
+ $('histBtn').onclick=function(){show('hist');renderHistory();window.scrollTo(0,0)};
+ $('histBack').onclick=function(){show('app');window.scrollTo(0,0)};
+ $('histList').onclick=function(e){var b=e.target.closest('.cald');if(!b)return;histSel=parseInt(b.getAttribute('data-d'),10);renderHistory()};
  var cs=document.querySelectorAll('.chip');for(var i=0;i<cs.length;i++){(function(b){b.onclick=function(){selMeal=b.getAttribute('data-meal');renderMeal()}})(cs[i])}
  $('mealOpts').onchange=function(e){var s=e.target.closest('.gsel');if(!s)return;updMac(parseInt(s.getAttribute('data-opt'),10))};
  $('mealOpts').onclick=function(e){var b=e.target.closest('.reg');if(!b)return;var i=parseInt(b.getAttribute('data-i'),10),o=PLAN[selMeal][i],t=optTotal(i);add({name:selMeal+' · '+o.n.replace(/^\d+\s·\s/,''),k:t.k,p:t.p,f:t.f,c:t.c,fi:t.fi});b.textContent='✓ Registrado';setTimeout(function(){b.textContent='Registrar en el día'},900)};
