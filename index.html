@@ -33,6 +33,9 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .mtop{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
 .mlab{font-size:13px;color:var(--text2)}.mval{font-size:14px;font-weight:600}.msub{font-size:12px;margin-top:6px}
 .knum{font-size:38px;font-weight:600;line-height:1.1}
+.vseg{display:flex;gap:6px;background:var(--s2);padding:4px;border-radius:10px;margin-bottom:14px}
+.vtab{flex:1;background:transparent;border:none;border-radius:8px;padding:10px;min-height:42px;font-weight:500;font-size:14px;color:var(--text2);cursor:pointer}
+.vtab.on{background:var(--surface);color:var(--text)}
 .chips{display:flex;gap:6px;background:var(--s2);padding:4px;border-radius:10px;margin-bottom:12px}
 .chip{flex:1;background:transparent;border:none;border-radius:8px;padding:9px 4px;min-height:40px;font-weight:500;font-size:13px;color:var(--text2);cursor:pointer}
 .chip.on{background:var(--surface);color:var(--text)}
@@ -88,44 +91,51 @@ h2{font-size:16px;font-weight:600;margin:0 0 10px}
   </div>
 
   <div id="app" style="display:none">
-    <div class="card" style="text-align:center">
-      <div class="mlab">Calorías restantes</div>
-      <div class="knum" id="kNum">0</div>
-      <div class="msub" id="kSub" style="color:var(--text2)"></div>
-      <div class="track"><div class="fill" id="kBar" style="width:0%;background:var(--c-kcal)"></div></div>
-    </div>
-    <div class="grid" id="grid"></div>
-
-    <div class="card">
-      <h2>Elige tu comida</h2>
-      <div class="chips">
-        <button class="chip on" data-meal="Desayuno" type="button">Desayuno</button>
-        <button class="chip" data-meal="Comida" type="button">Comida</button>
-        <button class="chip" data-meal="Snack" type="button">Snack</button>
-        <button class="chip" data-meal="Cena" type="button">Cena</button>
-      </div>
-      <div id="mealOpts"></div>
+    <div class="vseg">
+      <button class="vtab on" data-view="hoy" type="button">Hoy</button>
+      <button class="vtab" data-view="add" type="button">Añadir comida</button>
     </div>
 
-    <details class="card">
-      <summary>Otro / comer fuera (estimación)</summary>
-      <p class="muted" style="margin:8px 0 10px">Para algo que no esté en el plan. Pon al menos las calorías.</p>
-      <input id="qName" type="text" placeholder="Nombre (ej. Café, Menú fuera)" style="margin-bottom:8px">
-      <div class="mgrid">
-        <input id="qK" type="text" inputmode="decimal" placeholder="kcal *">
-        <input id="qP" type="text" inputmode="decimal" placeholder="Prot g">
-        <input id="qF" type="text" inputmode="decimal" placeholder="Grasa g">
-        <input id="qC" type="text" inputmode="decimal" placeholder="Carb g">
+    <div id="view-hoy">
+      <div class="card" style="text-align:center">
+        <div class="mlab">Calorías restantes</div>
+        <div class="knum" id="kNum">0</div>
+        <div class="msub" id="kSub" style="color:var(--text2)"></div>
+        <div class="track"><div class="fill" id="kBar" style="width:0%;background:var(--c-kcal)"></div></div>
       </div>
-      <button class="btn-primary" id="qAdd" style="margin-top:10px;width:100%">Añadir al día</button>
-    </details>
+      <div class="grid" id="grid"></div>
+      <div class="card">
+        <div class="row" style="justify-content:space-between">
+          <h2 style="margin:0">Hoy</h2>
+          <button id="clearBtn" style="font-size:13px;padding:6px 12px;min-height:auto">Vaciar día</button>
+        </div>
+        <div id="log" style="margin-top:8px"></div>
+      </div>
+    </div>
 
-    <div class="card">
-      <div class="row" style="justify-content:space-between">
-        <h2 style="margin:0">Hoy</h2>
-        <button id="clearBtn" style="font-size:13px;padding:6px 12px;min-height:auto">Vaciar día</button>
+    <div id="view-add" style="display:none">
+      <div class="card">
+        <h2>Elige tu comida</h2>
+        <div class="chips">
+          <button class="chip on" data-meal="Desayuno" type="button">Desayuno</button>
+          <button class="chip" data-meal="Comida" type="button">Comida</button>
+          <button class="chip" data-meal="Snack" type="button">Snack</button>
+          <button class="chip" data-meal="Cena" type="button">Cena</button>
+        </div>
+        <div id="mealOpts"></div>
       </div>
-      <div id="log" style="margin-top:8px"></div>
+      <details class="card">
+        <summary>Otro / comer fuera (estimación)</summary>
+        <p class="muted" style="margin:8px 0 10px">Para algo que no esté en el plan. Pon al menos las calorías.</p>
+        <input id="qName" type="text" placeholder="Nombre (ej. Café, Menú fuera)" style="margin-bottom:8px">
+        <div class="mgrid">
+          <input id="qK" type="text" inputmode="decimal" placeholder="kcal *">
+          <input id="qP" type="text" inputmode="decimal" placeholder="Prot g">
+          <input id="qF" type="text" inputmode="decimal" placeholder="Grasa g">
+          <input id="qC" type="text" inputmode="decimal" placeholder="Carb g">
+        </div>
+        <button class="btn-primary" id="qAdd" style="margin-top:10px;width:100%">Añadir al día</button>
+      </details>
     </div>
   </div>
 
@@ -239,6 +249,7 @@ function histMap(){var m={};getHistory().forEach(function(o){m[o.y+'-'+o.mo+'-'+
 function renderHistInfo(){var info=$('histInfo');if(!info)return;if(!histSel){info.innerHTML='<div class="muted">Toca un día para ver lo que comiste.</div>';return}var fecha=histSel+' de '+MESES[histMo-1]+' '+histY,arr=[];try{arr=JSON.parse(localStorage.getItem('macros_'+histY+'-'+histMo+'-'+histSel))||[]}catch(e){}if(!arr.length){info.innerHTML='<div style="font-weight:600;margin-bottom:4px">'+fecha+'</div><div class="muted">No hay nada registrado este día.</div>';return}var t=sumItems(arr),h='<div style="font-weight:600;margin-bottom:4px">'+fecha+'</div><div class="muted" style="margin-bottom:6px">'+Math.round(t.k)+' kcal · P'+Math.round(t.p)+' · G'+Math.round(t.f)+' · C'+Math.round(t.c)+' · Fib '+Math.round(t.fi)+'</div>';arr.forEach(function(x){h+='<div class="li"><div class="nm">'+x.name+'<div class="muted" style="font-weight:400">'+Math.round(x.k)+' kcal · P'+Math.round(x.p)+' G'+Math.round(x.f)+' C'+Math.round(x.c)+'</div></div></div>'});info.innerHTML=h}
 function renderHistory(){var el=$('histList');if(!el)return;if(histY==null){var n=new Date();histY=n.getFullYear();histMo=n.getMonth()+1}var map=histMap(),off=(new Date(histY,histMo-1,1).getDay()+6)%7,ndays=new Date(histY,histMo,0).getDate(),td=new Date(),tY=td.getFullYear(),tMo=td.getMonth()+1,tD=td.getDate();var h='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><button id="histPrev" style="min-height:36px;padding:6px 14px">‹</button><div style="font-weight:600">'+MESES[histMo-1]+' '+histY+'</div><button id="histNext" style="min-height:36px;padding:6px 14px">›</button></div><div class="calhead"><div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div></div><div class="cal">';for(var i=0;i<off;i++)h+='<div></div>';for(var dd=1;dd<=ndays;dd++){var has=!!map[histY+'-'+histMo+'-'+dd],cls='cald'+(has?' has':'')+((histY===tY&&histMo===tMo&&dd===tD)?' today':'')+(histSel===dd?' sel':'');h+='<button class="'+cls+'" data-d="'+dd+'">'+dd+'</button>'}h+='</div><div id="histInfo" style="margin-top:14px"></div>';el.innerHTML=h;$('histPrev').onclick=function(){histMo--;if(histMo<1){histMo=12;histY--}histSel=null;renderHistory()};$('histNext').onclick=function(){histMo++;if(histMo>12){histMo=1;histY++}histSel=null;renderHistory()};renderHistInfo()}
 function show(v){$('setup').style.display=(v==='setup')?'block':'none';$('app').style.display=(v==='app')?'block':'none';$('goalsView').style.display=(v==='goals')?'block':'none';$('histView').style.display=(v==='hist')?'block':'none'}
+function showView(v){$('view-hoy').style.display=(v==='hoy')?'block':'none';$('view-add').style.display=(v==='add')?'block':'none';var ts=document.querySelectorAll('.vtab');for(var i=0;i<ts.length;i++){ts[i].className='vtab'+(ts[i].getAttribute('data-view')===v?' on':'')}}
 window.addEventListener('DOMContentLoaded',function(){
  var prof=loadProfile();if(prof){fillProfile('s',prof);fillProfile('a',prof)}
  $('startBtn').onclick=function(){var p=readProfile('s');if(!validP(p)){alert('Rellena peso, objetivo, altura, edad y actividad.');return}saveProfile(p);GOALS=calcGoals(p);saveG();configured=true;fillProfile('a',p);goalSummary();render();show('app');window.scrollTo(0,0)};
@@ -249,13 +260,14 @@ window.addEventListener('DOMContentLoaded',function(){
  $('histBack').onclick=function(){show('app');window.scrollTo(0,0)};
  $('histList').onclick=function(e){var b=e.target.closest('.cald');if(!b)return;histSel=parseInt(b.getAttribute('data-d'),10);renderHistory()};
  var cs=document.querySelectorAll('.chip');for(var i=0;i<cs.length;i++){(function(b){b.onclick=function(){selMeal=b.getAttribute('data-meal');renderMeal()}})(cs[i])}
+ var vt=document.querySelectorAll('.vtab');for(var vi2=0;vi2<vt.length;vi2++){(function(b){b.onclick=function(){showView(b.getAttribute('data-view'))}})(vt[vi2])}
  $('mealOpts').onchange=function(e){var s=e.target.closest('.gsel');if(!s)return;updMac(parseInt(s.getAttribute('data-opt'),10))};
  $('mealOpts').onclick=function(e){var b=e.target.closest('.reg');if(!b)return;var i=parseInt(b.getAttribute('data-i'),10),o=PLAN[selMeal][i],t=optTotal(i);add({name:selMeal+' · '+o.n.replace(/^\d+\s·\s/,''),k:t.k,p:t.p,f:t.f,c:t.c,fi:t.fi});b.textContent='✓ Registrado';setTimeout(function(){b.textContent='Registrar en el día'},900)};
  $('qAdd').onclick=function(){var k=numv($('qK').value);if(k<=0){alert('Pon al menos las calorías.');return}add({name:($('qName').value||'').trim()||'Comida fuera',k:k,p:numv($('qP').value),f:numv($('qF').value),c:numv($('qC').value),fi:0});['qName','qK','qP','qF','qC'].forEach(function(id){$(id).value=''});var b=$('qAdd');b.textContent='✓ Añadido';setTimeout(function(){b.textContent='Añadir al día'},900)};
  $('log').onclick=function(e){var b=e.target.closest('.delbtn');if(!b)return;items.splice(parseInt(b.getAttribute('data-i'),10),1);persist();render()};
  $('clearBtn').onclick=function(){if(confirm('¿Vaciar todo lo de hoy?')){items=[];persist();render()}};
  load();goalSummary();renderMeal();render();
- show(configured?'app':'setup');
+ show(configured?'app':'setup');showView('hoy');
 });
 })();
 </script>
