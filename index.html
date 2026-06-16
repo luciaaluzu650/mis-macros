@@ -44,6 +44,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 select,input,button{font:inherit;color:inherit}
 input[type=text]{background:var(--surface);border:.5px solid var(--border);border-radius:8px;padding:9px 10px;min-height:42px;width:100%}
+select{background:var(--surface);border:.5px solid var(--border);border-radius:8px;padding:9px 10px;min-height:42px;width:100%;color:inherit}
 button{background:var(--s2);border:.5px solid var(--border);border-radius:8px;padding:9px 14px;min-height:42px;cursor:pointer;font-weight:500}
 button:active{transform:scale(.98)}
 .btn-primary{background:var(--c-prot);color:#fff;border-color:transparent}
@@ -149,14 +150,14 @@ try{var gg=JSON.parse(localStorage.getItem('macros_goals'));if(gg){GOALS=Object.
 var PLAN={
  Desayuno:[
   {n:'1 · Pancakes de avena',k:415,p:33,f:18,c:24,fi:6,d:['1 huevo + 180 ml claras + 35 g avena (harina/salvado)','100 ml leche de almendras 0%','Grasa (elige 1): 15 g nueces · 15 g crema de cacahuete · 10 g cacao desgrasado']},
-  {n:'2 · Con huevo + pavo + fruta',k:350,p:37,f:11,c:22,fi:4,d:['1 huevo + 120 ml claras','Proteína (elige 1): 60 g pavo · 30 g jamón serrano','Grasa (elige 1): 5 g aceite de oliva · 20 g nueces · 37 g aguacate · 40 g hummus','Fruta 165 g (o 60 g plátano · 240 g sandía/melón/fresas)']},
-  {n:'2 · Sin huevo + pavo + fruta',k:270,p:31,f:6,c:21,fi:4,d:['120 ml claras (sin huevo entero)','Proteína (elige 1): 60 g pavo · 30 g jamón serrano','Grasa (elige 1): 5 g aceite de oliva · 20 g nueces · 37 g aguacate · 40 g hummus','Fruta 165 g (o 60 g plátano · 240 g sandía/melón/fresas)']},
+  {n:'2 · Con huevo + pavo + fruta',k:306,p:37,f:6,c:22,fi:4,d:['1 huevo + 120 ml claras','Proteína (elige 1): 60 g pavo · 30 g jamón serrano','Fruta 165 g (o 60 g plátano · 240 g sandía/melón/fresas)'],g:[{l:'Grasa (ajusta los macros)',o:[{n:'5 g aceite de oliva',k:44,p:0,f:5,c:0,fi:0},{n:'20 g nueces',k:131,p:3,f:13,c:2.7,fi:1.4},{n:'37 g aguacate',k:59,p:0.7,f:5.5,c:3,fi:2.5},{n:'40 g hummus',k:92,p:3.6,f:4,c:5.6,fi:2.4}]}]},
+  {n:'2 · Sin huevo + pavo + fruta',k:226,p:31,f:1,c:21,fi:4,d:['120 ml claras (sin huevo entero)','Proteína (elige 1): 60 g pavo · 30 g jamón serrano','Fruta 165 g (o 60 g plátano · 240 g sandía/melón/fresas)'],g:[{l:'Grasa (ajusta los macros)',o:[{n:'5 g aceite de oliva',k:44,p:0,f:5,c:0,fi:0},{n:'20 g nueces',k:131,p:3,f:13,c:2.7,fi:1.4},{n:'37 g aguacate',k:59,p:0.7,f:5.5,c:3,fi:2.5},{n:'40 g hummus',k:92,p:3.6,f:4,c:5.6,fi:2.4}]}]},
   {n:'3 · Tostada con crema/hummus',k:570,p:47,f:29,c:29,fi:6,d:['1 huevo + 90 ml claras','Proteína (elige 1): 60 g pavo · 30 g jamón serrano','Untar (elige 1): 60 g hummus · 33 g crema de cacahuete','Pan (elige 1): 50 g espelta/centeno · 3 tostadas Wassa/arroz/maíz','5 g aceite de oliva']},
   {n:'4 · Jamón con tomate',k:375,p:33,f:18,c:22,fi:3,d:['95 g jamón serrano + tomate al gusto','5 g aceite de oliva','Pan (elige 1): 40 g espelta/centeno · 3 Wassa']},
   {n:'5 · Bol de cereales',k:315,p:25,f:10,c:24,fi:6,d:['Proteína (elige 1): 120 ml claras · 84 g pavo','15 g copos (5 cereales/avena/sarraceno) o 12 g hinchados','250 ml leche entera/semi o bebida de soja/coco/almendras','15 g semillas de chía/amapola']}
  ],
  Comida:[
-  {n:'Comida (plato completo)',k:545,p:52,f:21,c:35,fi:8,d:['Proteína (elige 1): 150 g pollo/pavo/sepia · o 1 huevo + 60 g claras','Verdura: mín. 100 g (vapor/plancha/cruda)','10 g aceite de oliva','Carbo (elige 1): 30 g pasta/arroz · 50 g quinoa · 90 g boniato/patata · 50 g pan · 3 tortitas','Grasa (elige 1): 37 g aguacate · 40 g hummus · 35 g aceitunas · 8-11 g frutos secos','(pesos en crudo)']}
+  {n:'Comida (plato completo)',k:486,p:51,f:15,c:32,fi:5,d:['Proteína (elige 1): 150 g pollo/pavo/sepia · o 1 huevo + 60 g claras','Verdura: mín. 100 g (vapor/plancha/cruda)','10 g aceite de oliva','Carbo (elige 1): 30 g pasta/arroz · 50 g quinoa · 90 g boniato/patata · 50 g pan · 3 tortitas','(pesos en crudo)'],g:[{l:'Grasa (ajusta los macros)',o:[{n:'37 g aguacate',k:59,p:0.7,f:5.5,c:3,fi:2.5},{n:'40 g hummus',k:92,p:3.6,f:4,c:5.6,fi:2.4},{n:'35 g aceitunas',k:52,p:0.3,f:5,c:0.3,fi:1.2},{n:'11 g frutos secos',k:64,p:2.3,f:5.5,c:2.4,fi:1.4}]}]}
  ],
  Snack:[
   {n:'1 · Queso batido + fruta',k:175,p:15,f:7,c:14,fi:2,d:['150 g queso batido desnatado','Fruta 50 g (o 60 g melón · 70 g sandía)','Grasa (elige 1): 10 g nueces · 10 g crema de cacahuete · 8 g cacao']},
@@ -166,7 +167,7 @@ var PLAN={
   {n:'5 · Pancakes',k:275,p:13,f:14,c:23,fi:4,d:['1 huevo + 35 g harina/salvado de avena','Grasa: 10 g nueces o crema de cacahuete']}
  ],
  Cena:[
-  {n:'Cena (plato completo)',k:325,p:31,f:18,c:12,fi:7,d:['Proteína (elige 1): 150 g pescado blanco/marisco · 150 g pollo/pavo/sepia · 1 huevo + 60 g claras','Verdura: mín. 100 g','10 g aceite de oliva (+ vinagre opcional)','Grasa (elige 1): 37 g aguacate · 40 g hummus · 35 g aceitunas · 8-11 g frutos secos']}
+  {n:'Cena (plato completo)',k:266,p:30,f:12,c:9,fi:4,d:['Proteína (elige 1): 150 g pescado blanco/marisco · 150 g pollo/pavo/sepia · 1 huevo + 60 g claras','Verdura: mín. 100 g','10 g aceite de oliva (+ vinagre opcional)'],g:[{l:'Grasa (ajusta los macros)',o:[{n:'37 g aguacate',k:59,p:0.7,f:5.5,c:3,fi:2.5},{n:'40 g hummus',k:92,p:3.6,f:4,c:5.6,fi:2.4},{n:'35 g aceitunas',k:52,p:0.3,f:5,c:0.3,fi:1.2},{n:'11 g frutos secos',k:64,p:2.3,f:5.5,c:2.4,fi:1.4}]}]}
  ]
 };
 var MACROS=[
@@ -205,11 +206,14 @@ function render(){
  if(!items.length){lg.innerHTML='<div class="muted" style="padding:8px 0">Aún no has registrado nada hoy.</div>'}
  else{var lh='';items.forEach(function(x,i){lh+='<div class="li"><div class="nm">'+x.name+'<div class="muted" style="font-weight:400">'+Math.round(x.k)+' kcal · P'+Math.round(x.p)+' G'+Math.round(x.f)+' C'+Math.round(x.c)+'</div></div><button class="delbtn" data-i="'+i+'" aria-label="Eliminar">×</button></div>'});lg.innerHTML=lh}
 }
+function optTotal(i){var o=PLAN[selMeal][i],div=$('mealOpts').querySelector('.opt[data-i="'+i+'"]'),t={k:o.k,p:o.p,f:o.f,c:o.c,fi:o.fi};if(o.g&&div){var sels=div.querySelectorAll('.gsel');for(var gi=0;gi<o.g.length;gi++){var vi=sels[gi]?(parseInt(sels[gi].value,10)||0):0,v=o.g[gi].o[vi];t.k+=v.k;t.p+=v.p;t.f+=v.f;t.c+=v.c;t.fi+=v.fi}}return t}
+function updMac(i){var t=optTotal(i),el=$('mac'+i);if(el)el.textContent=Math.round(t.k)+' kcal · P'+Math.round(t.p)+' · G'+Math.round(t.f)+' · C'+Math.round(t.c)+' · Fib '+Math.round(t.fi)}
 function renderMeal(){
  var cs=document.querySelectorAll('.chip');for(var i=0;i<cs.length;i++){cs[i].className='chip'+(cs[i].getAttribute('data-meal')===selMeal?' on':'')}
  var el=$('mealOpts'),opts=PLAN[selMeal]||[],h='';
- opts.forEach(function(o,i){var li=o.d.map(function(x){return '<li>'+x+'</li>'}).join('');h+='<div class="opt"><h3>'+o.n+'</h3><div class="mac">'+o.k+' kcal · P'+o.p+' · G'+o.f+' · C'+o.c+' · Fib '+o.fi+'</div><ul>'+li+'</ul><button class="reg btn-ok" data-i="'+i+'" style="width:100%">Registrar en el día</button></div>'});
+ opts.forEach(function(o,i){var li=o.d.map(function(x){return '<li>'+x+'</li>'}).join('');var gs='';if(o.g){o.g.forEach(function(grp,gi){var os=grp.o.map(function(v,vi){return '<option value="'+vi+'">'+v.n+'</option>'}).join('');gs+='<label class="f" style="margin:8px 0 0">'+grp.l+'<select class="gsel" data-opt="'+i+'" data-grp="'+gi+'">'+os+'</select></label>'})}h+='<div class="opt" data-i="'+i+'"><h3>'+o.n+'</h3><div class="mac" id="mac'+i+'"></div><ul>'+li+'</ul>'+gs+'<button class="reg btn-ok" data-i="'+i+'" style="width:100%;margin-top:8px">Registrar en el día</button></div>'});
  el.innerHTML=h;
+ opts.forEach(function(o,i){updMac(i)});
 }
 function show(v){$('setup').style.display=(v==='setup')?'block':'none';$('app').style.display=(v==='app')?'block':'none';$('goalsView').style.display=(v==='goals')?'block':'none'}
 window.addEventListener('DOMContentLoaded',function(){
@@ -219,7 +223,8 @@ window.addEventListener('DOMContentLoaded',function(){
  $('goalsBtn').onclick=function(){goalSummary();show('goals');window.scrollTo(0,0)};
  $('backBtn').onclick=function(){show('app');window.scrollTo(0,0)};
  var cs=document.querySelectorAll('.chip');for(var i=0;i<cs.length;i++){(function(b){b.onclick=function(){selMeal=b.getAttribute('data-meal');renderMeal()}})(cs[i])}
- $('mealOpts').onclick=function(e){var b=e.target.closest('.reg');if(!b)return;var o=PLAN[selMeal][parseInt(b.getAttribute('data-i'),10)];add({name:selMeal+' · '+o.n.replace(/^\d+\s·\s/,''),k:o.k,p:o.p,f:o.f,c:o.c,fi:o.fi});b.textContent='✓ Registrado';setTimeout(function(){b.textContent='Registrar en el día'},900)};
+ $('mealOpts').onchange=function(e){var s=e.target.closest('.gsel');if(!s)return;updMac(parseInt(s.getAttribute('data-opt'),10))};
+ $('mealOpts').onclick=function(e){var b=e.target.closest('.reg');if(!b)return;var i=parseInt(b.getAttribute('data-i'),10),o=PLAN[selMeal][i],t=optTotal(i);add({name:selMeal+' · '+o.n.replace(/^\d+\s·\s/,''),k:t.k,p:t.p,f:t.f,c:t.c,fi:t.fi});b.textContent='✓ Registrado';setTimeout(function(){b.textContent='Registrar en el día'},900)};
  $('qAdd').onclick=function(){var k=numv($('qK').value);if(k<=0){alert('Pon al menos las calorías.');return}add({name:($('qName').value||'').trim()||'Comida fuera',k:k,p:numv($('qP').value),f:numv($('qF').value),c:numv($('qC').value),fi:0});['qName','qK','qP','qF','qC'].forEach(function(id){$(id).value=''});var b=$('qAdd');b.textContent='✓ Añadido';setTimeout(function(){b.textContent='Añadir al día'},900)};
  $('log').onclick=function(e){var b=e.target.closest('.delbtn');if(!b)return;items.splice(parseInt(b.getAttribute('data-i'),10),1);persist();render()};
  $('clearBtn').onclick=function(){if(confirm('¿Vaciar todo lo de hoy?')){items=[];persist();render()}};
